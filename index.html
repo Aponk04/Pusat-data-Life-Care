@@ -3,30 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekam Medis Home Care (Fitur Lengkap)</title>
+    <title>Rekam Medis Life Care</title>
+    <link rel="icon" href="https://github.com/Aponk04/logilivecare/blob/main/logolifecare1.gif?raw=true" type="image/gif">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include jsPDF and html2canvas libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* General Body and Container Styling */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f4f7f6; 
-            margin: 0; 
-            padding: 0; 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            background-image: url('https://github.com/Aponk04/logilivecare/blob/main/bk3.jpg?raw=true');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
         }
-        .container { 
-            background-color: #ffffff; 
-            padding: 30px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
-            width: 100%; 
-            max-width: 800px; 
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 980px;
             margin: 20px auto;
             box-sizing: border-box;
         }
 
+        /* LOGIN PAGE STYLES */
+        #login-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://github.com/Aponk04/logilivecare/blob/main/bk3.gif?raw=true');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .login-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-logo-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.15;
+            z-index: 0;
+            width: 180px;
+            height: auto;
+        }
+
+        .login-logo {
+            display: none;
+        }
+
+        #login-form input {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        #login-form .btn {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        #login-error {
+            color: #dc3545;
+            margin-top: 15px;
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* App Wrapper */
+        #app-wrapper {
+            display: none; /* Hidden by default */
+        }
+
         /* Responsive Navigation Bar Styling */
         nav {
-            background-color: #007bff;
+            background-color: #CC7722;
             padding: 10px 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             position: sticky;
@@ -57,15 +134,18 @@
         .nav-links {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-left: auto;
         }
         .nav-btn {
             background-color: transparent;
             color: white;
             border: 2px solid transparent;
-            padding: 10px 20px;
+            padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             transition: background-color 0.3s, border-color 0.3s;
         }
@@ -77,10 +157,41 @@
             color: #007bff;
             border-color: white;
         }
-        
-        /* Hamburger Menu for Mobile */
+
+        .logged-in-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 1em;
+            font-weight: 500;
+            padding-left: 15px;
+            border-left: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .user-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: #007bff;
+            font-weight: bold;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .user-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         #hamburger-btn {
-            display: none; /* Hidden by default */
+            display: none;
             background: none;
             border: none;
             color: white;
@@ -88,14 +199,14 @@
             cursor: pointer;
         }
 
-        /* Mobile & Tablet Styles */
-        @media (max-width: 768px) {
+        @media (max-width: 850px) {
             .nav-links {
                 position: fixed;
                 top: 0;
                 left: 0;
                 height: 100%;
-                width: 250px;
+                width: 95px;
+                max-width: 500;
                 background-color: #343a40;
                 flex-direction: column;
                 align-items: flex-start;
@@ -103,6 +214,7 @@
                 transform: translateX(-100%);
                 transition: transform 0.3s ease-in-out;
                 z-index: 1000;
+                margin-left: 0;
             }
             .nav-links.is-open {
                 transform: translateX(0);
@@ -112,33 +224,50 @@
                 text-align: left;
             }
             #hamburger-btn {
-                display: block; /* Show on mobile */
+                display: block;
             }
             .nav-brand {
-                flex-grow: 1; /* Allow brand to take space */
+                flex-grow: 1;
             }
             .nav-container {
-                justify-content: flex-start; /* Adjust alignment */
+                justify-content: flex-start;
+            }
+            .logged-in-user {
+                display: none;
+            }
+            .logged-in-user-mobile {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: white;
+                font-size: 1em;
+                font-weight: 500;
+                padding: 10px 0;
+                width: 100%;
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+                margin-bottom: 10px;
+            }
+        }
+        @media (min-width: 851px) {
+            .logged-in-user-mobile {
+                display: none !important;
             }
         }
 
-        /* Typography */
-        h1, h2, h3, h4 { 
-            color: #333; 
-            text-align: center; 
-            margin-bottom: 25px; 
+        h1, h2, h3, h4 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
         }
 
-        /* Card Styling */
-        .card { 
-            background-color: #fdfdfd; 
-            border: 1px solid #e0e0e0; 
-            border-radius: 8px; 
-            padding: 20px; 
-            margin-bottom: 20px; 
+        .card {
+            background-color: #fdfdfd;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        /* Chart Container Styling */
         #charts-container {
             display: flex;
             justify-content: space-around;
@@ -151,82 +280,110 @@
             text-align: center;
         }
 
-        /* Form Elements */
-        form label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: 600; 
-            color: #555; 
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
         }
-        form input, form textarea, form select { 
-            width: calc(100% - 24px); 
-            padding: 12px; 
-            margin-bottom: 15px; 
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
-            font-size: 16px; 
-            transition: border-color 0.3s; 
+        form input, form textarea, form select {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-        form input[readonly] { 
-            background-color: #e9ecef; 
-            cursor: not-allowed; 
+        form input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
         }
-        form input[type="file"] { 
-            padding: 5px; 
+        form input[type="file"] {
+            padding: 5px;
         }
-        form input:focus, form textarea:focus { 
-            border-color: #007bff; 
-            outline: none; 
+        form input:focus, form textarea:focus {
+            border-color: #007bff;
+            outline: none;
         }
-        .form-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 20px; 
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
         }
 
-        /* Buttons */
-        .btn { 
-            color: white; 
-            padding: 12px 15px; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 16px; 
-            width: 100%; 
-            box-sizing: border-box; 
-            transition: background-color 0.3s; 
-            text-align: center; 
-            display: inline-block; 
-            text-decoration: none; 
+        .autocomplete-wrapper {
+            position: relative;
+        }
+        .suggestions-popup {
+            display: none;
+            position: absolute;
+            border: 1px solid #ddd;
+            background-color: white;
+            width: calc(100% - 2px);
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1002;
+            border-radius: 0 0 5px 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .btn {
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.3s;
+            text-align: center;
+            display: inline-block;
+            text-decoration: none;
         }
         .btn-primary { background-color: #007bff; } .btn-primary:hover { background-color: #0056b3; }
         .btn-success { background-color: #28a745; margin-top: 10px; } .btn-success:hover { background-color: #218838; }
         .btn-secondary { background-color: #6c757d; } .btn-secondary:hover { background-color: #5a6268; }
         .btn-danger { background-color: #dc3545; } .btn-danger:hover { background-color: #c82333; }
         .btn-warning { background-color: #ffc107; color: #212529; } .btn-warning:hover { background-color: #e0a800; }
+        .btn-info-green { background-color: #20c997; }
+        .btn-info-green:hover { background-color: #17a2b8; }
+        .btn-pink { background-color: #e83e8c; }
+        .btn-pink:hover { background-color: #d63384; }
 
-
-        /* Lists Styling */
-        ul { 
-            list-style: none; 
-            padding: 0; 
+        ul {
+            list-style: none;
+            padding: 0;
         }
-        #patient-list li, #drug-therapy-list li, #nurse-list li, #admin-list li { 
-            background-color: #f8f9fa; 
-            border: 1px solid #dee2e6; 
-            padding: 15px; 
-            margin-bottom: 8px; 
-            border-radius: 5px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            transition: background-color 0.3s, border-left 0.3s; 
+        #patient-list li, #drug-therapy-list li, #nurse-list li, #admin-list li, #services-list li, #price-list li {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s, border-left 0.3s;
         }
-        #patient-list li:hover, #drug-therapy-list li:not(.therapy-stopped):hover, #nurse-list li:hover { 
-            background-color: #e9ecef; 
+        #patient-list li:hover, #drug-therapy-list li:not(.therapy-stopped):hover, #nurse-list li:not(.nurse-detail-btn):hover, #services-list li:hover {
+            background-color: #e9ecef;
         }
-        .list-item-info { 
-            flex-grow: 1; 
+        #services-list li {
+            font-weight: 500;
+            border-left: 5px solid #17a2b8;
+            cursor: pointer;
+        }
+        .list-item-info {
+            flex-grow: 1;
             transition: opacity 0.3s, text-decoration 0.3s;
         }
         .list-item-actions {
@@ -234,11 +391,10 @@
             gap: 5px;
             flex-shrink: 0;
         }
-        .list-item-actions button { 
+        .list-item-actions button {
             margin-left: 0;
         }
 
-        /* Style for stopped therapy */
         #drug-therapy-list li.therapy-stopped {
             background-color: #e6e0f8;
             border-left: 5px solid #6f42c1;
@@ -248,56 +404,51 @@
             opacity: 0.6;
         }
 
-
-        /* Header for list with search bar */
-        .list-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 10px;
         }
-        .list-header h2 { 
-            margin: 0; 
+        .list-header h2 {
+            margin: 0;
         }
-        #search-patient, #search-nurse { 
-            padding: 8px 12px; 
-            font-size: 15px; 
+        #search-patient, #search-nurse {
+            padding: 8px 12px;
+            font-size: 15px;
             width: 100%;
             max-width: 280px;
-            border: 1px solid #ccc; 
-            border-radius: 5px; 
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
-        /* Medical Record List */
-        #medical-record-list li { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-start; 
-            padding: 15px; 
-            background-color: #e0f7fa; 
-            border-left: 5px solid #00bcd4; 
-            margin-bottom: 15px; 
-            border-radius: 4px; 
+        #medical-record-list li {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 15px;
+            background-color: #e0f7fa;
+            border-left: 5px solid #00bcd4;
+            margin-bottom: 15px;
+            border-radius: 4px;
         }
         .record-header { font-weight: bold; margin-bottom: 10px; font-size: 1.1em; }
         .record-body p { margin: 5px 0; }
         .record-body strong { color: #00796b; }
         .record-photo { max-width: 100%; border-radius: 5px; margin-top: 10px; }
         hr { border: 0; height: 1px; background-color: #e0e0e0; margin: 30px 0; }
-        
-        /* Modal Styling */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 25px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 10px; position: relative; }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 25px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 10px; position: relative; color: #000; }
+        .modal-content h2, .modal-content h3, .modal-content label { color: #000; }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; position: absolute; top: 10px; right: 20px; }
         .close-btn:hover, .close-btn:focus { color: black; text-decoration: none; cursor: pointer; }
-        
-        /* Patient & Nurse Info Display */
+
         .patient-info-display, .nurse-info-display { padding: 15px; background-color: #e9ecef; border-radius: 5px; }
         .patient-info-display p, .nurse-info-display p { margin: 8px 0; }
 
-        /* NEW: Nurse Detail Layout */
         #nurse-detail-content {
             display: flex;
             flex-wrap: wrap;
@@ -312,266 +463,540 @@
             border-radius: 8px;
             border: 3px solid #e9ecef;
         }
+
+        #add-nurse-card .modal-content {
+            max-width: 500px;
+        }
+        #add-nurse-form label {
+            text-align: left;
+        }
+        #add-nurse-error {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #price-details-modal .modal-content {
+            max-width: 450px;
+        }
+        .price-detail-item {
+            margin-bottom: 10px;
+        }
+        .price-detail-item strong {
+            display: inline-block;
+            width: 150px;
+        }
+
+        /* PERBAIKAN: Invoice PDF styling */
+        #invoice-pdf-content-wrapper {
+            position: absolute;
+            left: -9999px; /* Pindahkan ke luar layar, jangan gunakan display:none */
+            top: -9999px;
+            background-color: #fff;
+            padding: 20mm;
+            width: 210mm; /* A4 width */
+            box-sizing: border-box;
+        }
+        #invoice-pdf-content {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 12pt;
+            color: #333;
+        }
+        #invoice-pdf-content h1 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        #invoice-pdf-content .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        #invoice-pdf-content .invoice-logo {
+            max-width: 100px;
+            height: auto;
+        }
+        #invoice-pdf-content .invoice-info p {
+            margin: 2px 0;
+        }
+        #invoice-pdf-content .invoice-details table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        #invoice-pdf-content .invoice-details th,
+        #invoice-pdf-content .invoice-details td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        #invoice-pdf-content .invoice-details th {
+            background-color: #f2f2f2;
+        }
+        #invoice-pdf-content .invoice-total {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <button id="hamburger-btn">☰</button>
-            <div class="nav-brand">
-                <img src="https://github.com/Aponk04/logilivecare/blob/main/logolifecare1.gif?raw=true" alt="Logo Lifecare" class="nav-logo">
-                <span class="nav-title">PUSAT DATA LIFE CARE</span>
+    <div id="login-section">
+        <div class="login-card">
+            <img src="https://github.com/Aponk04/logilivecare/blob/main/LOGO_LIFECARE.png?raw=true" alt="Logo Life Care" class="login-logo-background">
+            <h2 style="position: relative; z-index: 1;">Login</h2>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username / Email Admin Utama" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="btn btn-primary">Masuk</button>
+                <p id="login-error">Username atau password salah!</p>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-wrapper">
+        <nav>
+            <div class="nav-container">
+                <button id="hamburger-btn">☰</button>
+                <div class="nav-brand">
+                    <img src="https://github.com/Aponk04/logilivecare/blob/main/logolifecare1.gif?raw=true" alt="Logo Lifecare" class="nav-logo">
+                    <span class="nav-title">PUSAT DATA LIFE CARE</span>
+                </div>
+                <div id="nav-links-container" class="nav-links">
+                    <div class="logged-in-user-mobile">
+                        <div class="user-icon">
+                            <img src="https://via.placeholder.com/30/f8f9fa/007bff?text=U" alt="User Icon" id="current-user-img-mobile">
+                        </div>
+                        <span id="current-username-mobile">Guest</span>
+                    </div>
+
+                    <button id="nav-patients" class="nav-btn active">DATA PASIEN</button>
+                    <button id="nav-nurses" class="nav-btn">DATA PERAWAT</button>
+                    <button id="nav-services" class="nav-btn">JENIS LAYANAN</button>
+                    <button id="nav-admin" class="nav-btn">ADMINISTRASI</button>
+                    <div class="logged-in-user">
+                        <div class="user-icon" id="current-user-icon">
+                            <img src="https://via.placeholder.com/30/f8f9fa/007bff?text=U" alt="User Icon" id="current-user-img">
+                        </div>
+                        <span id="current-username">Guest</span>
+                    </div>
+                    <button id="nav-logout" class="nav-btn btn-danger">LOGOUT</button>
+                </div>
             </div>
-            <div id="nav-links-container" class="nav-links">
-                <button id="nav-patients" class="nav-btn active">DATA PASIEN</button>
-                <button id="nav-nurses" class="nav-btn">DATA PERAWAT</button>
-                <button id="nav-admin" class="nav-btn">ADMINISTRASI</button>
+        </nav>
+
+        <div class="container">
+            <main id="main-patients-section">
+                <div id="patient-management-section">
+                    <h1>Rekam Medis Pasien Life Care</h1>
+                    <div id="charts-container" class="card">
+                        <div class="chart-wrapper">
+                            <h4>Total Pasien</h4>
+                            <canvas id="total-patients-chart"></canvas>
+                        </div>
+                        <div class="chart-wrapper">
+                            <h4>Pasien per Jenis Kelamin</h4>
+                            <canvas id="gender-chart"></canvas>
+                        </div>
+                    </div>
+                    <button id="show-add-patient-btn" class="btn btn-primary" style="margin-bottom: 20px;">Tambah Pasien Baru</button>
+                    <div id="add-patient-card" class="card" style="display: none;">
+                        <h2>Tambah Pasien Baru</h2>
+                        <form id="add-patient-form">
+                            <label for="patient-rm">No. Rekam Medik:</label>
+                            <input type="text" id="patient-rm" readonly>
+                            <label for="patient-name">Nama Pasien:</label><input type="text" id="patient-name" required>
+                            <label for="patient-dob">Tanggal Lahir:</label><input type="date" id="patient-dob" required>
+                            <label for="patient-gender">Jenis Kelamin:</label>
+                            <select id="patient-gender" required>
+                                <option value="">Pilih Jenis Kelamin</option>
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                            <label for="patient-address">Alamat:</label><textarea id="patient-address" rows="3" required></textarea>
+                            <label for="patient-allergies">Riwayat Alergi:</label><textarea id="patient-allergies" rows="3" placeholder="Contoh: Paracetamol, Udang, Debu"></textarea>
+                            <label for="patient-initial-assessment">Asesmen Awal:</label>
+                            <textarea id="patient-initial-assessment" rows="4"></textarea>
+
+                            <div class="autocomplete-wrapper">
+                                <label for="patient-assessing-nurse">Nama Perawat (Asesmen):</label>
+                                <input type="text" id="patient-assessing-nurse" placeholder="Ketik nama perawat yang melakukan asesmen" autocomplete="off">
+                                <div id="assessing-nurse-suggestions" class="suggestions-popup"></div>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button type="submit" class="btn btn-success" style="margin-top: 0;">Simpan Pasien</button>
+                                <button type="button" id="cancel-add-patient-btn" class="btn btn-secondary" style="margin-top: 0;">Batal</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <div class="list-header">
+                            <h2>Daftar Pasien</h2>
+                            <input type="text" id="search-patient" placeholder="Cari nama atau No. RM...">
+                        </div>
+                        <ul id="patient-list"><li>Memuat daftar pasien...</li></ul>
+                    </div>
+                </div>
+                <div id="patient-detail-section" style="display: none;">
+                    <h2 style="margin-bottom: 10px;">Detail Pasien</h2>
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="text-align: left; margin: 0;">Informasi Pasien</h3>
+                            <div class="list-item-actions">
+                                   <button id="edit-patient-btn" class="btn btn-warning" style="width: auto; padding: 8px 15px;">Edit Data</button>
+                                   <button id="delete-patient-btn" class="btn btn-danger" style="width: auto; padding: 8px 15px;">Hapus Data</button>
+                            </div>
+                        </div>
+                        <div id="patient-info-display" class="patient-info-display"></div>
+                    </div>
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                  <h3 style="text-align: left; margin: 0;">Daftar Terapi Obat</h3>
+                                  <button id="show-add-drug-therapy-btn" class="btn btn-success" style="width: auto; padding: 8px 15px; margin-top:0;">Tambah Terapi</button>
+                        </div>
+                        <h4 style="margin-top: 10px; text-align: left; padding-left: 5px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Terapi Aktif:</h4>
+                        <ul id="drug-therapy-list"></ul>
+                    </div>
+                    <button id="view-visits-btn" class="btn btn-primary">Lihat & Tambah Riwayat Kunjungan</button>
+                    <button id="back-to-patients-from-detail" class="btn btn-secondary" style="margin-top: 10px;">Kembali ke Daftar Pasien</button>
+                </div>
+                <div id="visit-history-section" style="display: none;">
+                    <h2>Riwayat Kunjungan: <span id="visit-patient-name"></span></h2>
+                    <div class="card">
+                        <h3>Tambah Catatan Kunjungan Baru</h3>
+                        <form id="add-medical-record-form">
+                            <div class="form-grid">
+                                <div><label for="visit-date">Tanggal:</label><input type="date" id="visit-date" required></div>
+                                <div><label for="visit-time">Jam:</label><input type="time" id="visit-time" required></div>
+                            </div>
+                            <hr><h4>TTV</h4>
+                            <div class="form-grid">
+                                <div><label>Tek. Darah:</label><input type="text" id="blood-pressure" placeholder="120/80"></div>
+                                <div><label>Suhu:</label><input type="number" step="0.1" id="temperature" placeholder="36.5"></div>
+                                <div><label>Nadi:</label><input type="number" id="pulse" placeholder="80"></div>
+                                <div><label>Pernapasan:</label><input type="number" id="respiration" placeholder="20"></div>
+                            </div>
+                            <hr><h4>SOAP</h4>
+                            <label><strong>S:</strong></label><textarea id="soap-s" rows="3" required></textarea>
+                            <label><strong>O:</strong></label><textarea id="soap-o" rows="4" required></textarea>
+                            <label><strong>A:</strong></label><textarea id="soap-a" rows="3" required></textarea>
+                            <label><strong>P:</strong></label><textarea id="soap-p" rows="4" required></textarea>
+                            <hr>
+                            <label><strong>Foto Dokumentasi (Max 1MB):</strong></label><input type="file" id="visit-photo" accept="image/*">
+                            <label>Catatan Pemberian Obat Saat Kunjungan:</label><textarea id="medication-notes" rows="3"></textarea>
+
+                            <div class="autocomplete-wrapper">
+                                <label for="visiting-nurse-name">Nama Perawat:</label>
+                                <input type="text" id="visiting-nurse-name" placeholder="Ketik nama perawat yang berkunjung" autocomplete="off">
+                                <div id="visiting-nurse-suggestions" class="suggestions-popup"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Simpan Kunjungan</button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <h3>Daftar Kunjungan Terdahulu</h3>
+                        <ul id="medical-record-list"></ul>
+                    </div>
+                    <button id="back-to-detail-btn" class="btn btn-secondary">Kembali ke Detail Pasien</button>
+                </div>
+            </main>
+
+            <main id="main-nurses-section" style="display: none;">
+                <h1>Data Perawat</h1>
+                <div id="nurse-list-view">
+                        <button id="show-add-nurse-btn" class="btn btn-primary" style="margin-bottom: 20px;">Tambah Perawat Baru</button>
+                        <div id="add-nurse-card" class="card" style="display: none;">
+                            <h2>Tambah Perawat Baru & Akun Login</h2>
+                            <form id="add-nurse-form">
+                                <label for="nurse-name">Nama Perawat:</label><input type="text" id="nurse-name" required>
+                                <label for="nurse-dob">Tanggal Lahir:</label><input type="date" id="nurse-dob" required>
+                                <label for="nurse-id">ID Perawat:</label>
+                                <input type="text" id="nurse-id" readonly> <!-- ID Perawat otomatis terisi dan tidak bisa diubah -->
+                                <label for="nurse-reg-number">Nomor Registrasi:</label><input type="text" id="nurse-reg-number" required>
+                                <label for="nurse-visit-area">Wilayah Kunjungan:</label><textarea id="nurse-visit-area" rows="3"></textarea>
+                                <label for="nurse-photo">Foto Perawat (Max 1MB):</label>
+                                <input type="file" id="nurse-photo" accept="image/*">
+                                <hr>
+                                <h3>Informasi Akun Login</h3>
+                                <label for="new-nurse-username">Username Akun:</label>
+                                <input type="text" id="new-nurse-username" required>
+                                <label for="new-nurse-password">Password Akun:</label>
+                                <input type="password" id="new-nurse-password" required>
+                                <p id="add-nurse-error" style="display: none;">ID Perawat atau Username sudah terdaftar.</p>
+                                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                    <button type="submit" class="btn btn-success" style="margin-top: 0;">Simpan Perawat & Akun</button>
+                                    <button type="button" id="cancel-add-nurse-btn" class="btn btn-secondary" style="margin-top: 0;">Batal</button>
+                                </div>
+                            </form>
+                        </div>
+                    <div class="card">
+                        <div class="list-header">
+                            <h2>Daftar Perawat</h2>
+                            <input type="text" id="search-nurse" placeholder="Cari nama perawat...">
+                        </div>
+                        <ul id="nurse-list"></ul>
+                    </div>
+                </div>
+                <div id="nurse-detail-view" style="display: none;">
+                    <h2 id="nurse-detail-name"></h2>
+                    <div id="nurse-detail-content">
+                        <div id="nurse-info-display" class="nurse-info-display"></div>
+                        <div id="nurse-photo-container">
+                            <img id="nurse-detail-photo" src="" alt="Foto Perawat">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button id="edit-nurse-detail-btn" class="btn btn-warning" style="width: 25%;">Edit</button>
+                        <button id="delete-nurse-detail-btn" class="btn btn-danger" style="width: 25%;">Hapus</button>
+                    </div>
+                    <button id="back-to-nurses-btn" class="btn btn-secondary" style="margin-top: 10px;">Kembali ke Daftar Perawat</button>
+                </div>
+            </main>
+
+            <main id="main-services-section" style="display: none;">
+                <h1>Jenis Layanan</h1>
+                <div class="card">
+                    <ul id="services-list">
+                        <li data-service-id="Layanan Jasa Perawat Lansia">LAYANAN JASA PERAWAT LANSIA</li>
+                        <li data-service-id="Layanan Jasa Perawat Alat Medis">LAYANAN JASA PERAWAT PADA PASIEN DENGAN PEMASANGAN DAN PERAWATAN ALAT MEDIS</li>
+                        <li data-service-id="Layanan Jasa Perawatan Luka">LAYANAN JASA PERAWATAN LUKA DI RUMAH</li>
+                        <li data-service-id="Layanan Jasa Manajemen Stres">LAYANAN JASA MANAJEMEN STRES OLEH PERAWAT AHLI</li>
+                        <li data-service-id="Layanan Jasa Khitan">LAYANAN JASA KHITAN OLEH PERAWAT AHLI</li>
+                        <li data-service-id="Layanan Jasa Infus Vitamin">LAYANAN JASA INFUS VITAMIN IMMUNE BOOSTER</li>
+                        <li data-service-id="Jasa Layanan Hemodialisis">JASA LAYANAN HEMODIALISIS DI RUMAH ANDA</li>
+                    </ul>
+                </div>
+            </main>
+
+            <main id="main-admin-section" style="display: none;">
+                <h1>Administrasi</h1>
+                <div class="card">
+                    <ul id="admin-list">
+                        <li><a href="https://github.com/Aponk04/logilivecare/blob/main/IC2.png?raw=true" class="admin-link">Contoh Surat Persetujuan </a></li>
+                        <li><a href="https://aponk04.github.io/ic/" target="_blank" rel="noopener noreferrer" class="admin-link">Tanda Tangan Surat Persetujuan </a></li>
+                        <li><a href="#" class="admin-link">Surat Kontrak Kerja Sama</a></li>
+                        <li><a href="#" class="admin-link">form Edukasi </a></li>
+                    </ul>
+                </div>
+            </main>
+        </div>
+
+        <div id="edit-patient-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-patient-modal-btn">&times;</span>
+                <h2>Edit Data Pasien</h2>
+                <form id="edit-patient-form">
+                    <label for="edit-patient-rm">No. Rekam Medik:</label><input type="text" id="edit-patient-rm" readonly>
+                    <label for="edit-patient-name">Nama Pasien:</label><input type="text" id="edit-patient-name" required>
+                    <label for="edit-patient-dob">Tanggal Lahir:</label><input type="date" id="edit-patient-dob" required>
+                    <label for="edit-patient-gender">Jenis Kelamin:</label>
+                    <select id="edit-patient-gender" required>
+                        <option value="">Pilih Jenis Kelamin</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                    <label for="edit-patient-address">Alamat:</label><textarea id="edit-patient-address" rows="3" required></textarea>
+                    <label for="edit-patient-allergies">Riwayat Alergi:</label><textarea id="edit-patient-allergies" rows="3"></textarea>
+                    <label for="edit-patient-initial-assessment">Asesmen Awal:</label>
+                    <textarea id="edit-patient-initial-assessment" rows="4"></textarea>
+
+                    <div class="autocomplete-wrapper">
+                        <label for="edit-patient-assessing-nurse">Nama Perawat (Asesmen):</label>
+                        <input type="text" id="edit-patient-assessing-nurse" autocomplete="off">
+                        <div id="edit-assessing-nurse-suggestions" class="suggestions-popup"></div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                </form>
             </div>
         </div>
-    </nav>
-
-    <div class="container">
-        <!-- SECTION 1: Patient Data (Main Section) -->
-        <main id="main-patients-section">
-            <div id="patient-management-section">
-                <h1>Rekam Medis Perawat Home Care</h1>
-                <div id="charts-container" class="card">
-                    <div class="chart-wrapper">
-                        <h4>Total Pasien</h4>
-                        <canvas id="total-patients-chart"></canvas>
+        <div id="add-drug-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-add-drug-modal-btn">&times;</span>
+                <h2>Tambah Terapi Obat Baru</h2>
+                <form id="add-drug-therapy-form">
+                    <div class="form-grid">
+                        <div><label for="drug-name">Nama Obat:</label><input type="text" id="drug-name" required></div>
+                        <div><label for="drug-dosage">Dosis:</label><input type="text" id="drug-dosage" placeholder="Contoh: 500 mg"></div>
+                        <div><label for="drug-frequency">Frekuensi:</label><input type="text" id="drug-frequency" placeholder="Contoh: 3x sehari"></div>
+                        <div><label for="drug-route">Rute Pemberian:</label><input type="text" id="drug-route" placeholder="Contoh: Oral"></div>
                     </div>
-                    <div class="chart-wrapper">
-                        <h4>Pasien per Jenis Kelamin</h4>
-                        <canvas id="gender-chart"></canvas>
-                    </div>
-                </div>
-                <button id="show-add-patient-btn" class="btn btn-primary" style="margin-bottom: 20px;">Tambah Pasien Baru</button>
-                <div id="add-patient-card" class="card" style="display: none;">
-                    <h2>Tambah Pasien Baru</h2>
-                    <form id="add-patient-form">
-                        <label for="patient-rm">No. Rekam Medik:</label>
-                        <input type="text" id="patient-rm" readonly>
-                        <label for="patient-name">Nama Pasien:</label><input type="text" id="patient-name" required>
-                        <label for="patient-dob">Tanggal Lahir:</label><input type="date" id="patient-dob" required>
-                        <label for="patient-gender">Jenis Kelamin:</label>
-                        <select id="patient-gender" required>
-                            <option value="">Pilih Jenis Kelamin</option>
-                            <option value="Laki-laki">Laki-laki</option>
-                            <option value="Perempuan">Perempuan</option>
-                        </select>
-                        <label for="patient-address">Alamat:</label><textarea id="patient-address" rows="3" required></textarea>
-                        <label for="patient-allergies">Riwayat Alergi:</label><textarea id="patient-allergies" rows="3" placeholder="Contoh: Paracetamol, Udang, Debu"></textarea>
-                        <label for="patient-initial-assessment">Asesmen Awal:</label>
-                        <textarea id="patient-initial-assessment" rows="4" placeholder="Masukkan hasil asesmen awal"></textarea>
-                        <label for="patient-assessing-nurse">Nama Perawat (Asesmen):</label>
-                        <input type="text" id="patient-assessing-nurse" placeholder="Nama perawat yang melakukan asesmen">
-                        <div style="display: flex; gap: 10px; margin-top: 10px;">
-                            <button type="submit" class="btn btn-success" style="margin-top: 0;">Simpan Pasien</button>
-                            <button type="button" id="cancel-add-patient-btn" class="btn btn-secondary" style="margin-top: 0;">Batal</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="list-header">
-                        <h2>Daftar Pasien</h2>
-                        <input type="text" id="search-patient" placeholder="Cari nama atau No. RM...">
-                    </div>
-                    <ul id="patient-list"><li>Memuat daftar pasien...</li></ul>
-                </div>
+                    <button type="submit" class="btn btn-success" style="margin-top: 10px;">Simpan Terapi</button>
+                </form>
             </div>
-            <div id="patient-detail-section" style="display: none;">
-                <h2 style="margin-bottom: 10px;">Detail Pasien</h2>
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="text-align: left; margin: 0;">Informasi Pasien</h3>
-                        <button id="edit-patient-btn" class="btn btn-primary" style="width: auto; padding: 8px 15px;">Edit Data</button>
-                    </div>
-                    <div id="patient-info-display" class="patient-info-display"></div>
-                </div>
-                <div class="card">
-                    <h3>Daftar Terapi Obat</h3>
-                    <form id="add-drug-therapy-form">
-                        <div class="form-grid">
-                            <div><label for="drug-name">Nama Obat:</label><input type="text" id="drug-name" required></div>
-                            <div><label for="drug-dosage">Dosis:</label><input type="text" id="drug-dosage" placeholder="Contoh: 500 mg"></div>
-                            <div><label for="drug-frequency">Frekuensi:</label><input type="text" id="drug-frequency" placeholder="Contoh: 3x sehari"></div>
-                            <div><label for="drug-route">Rute Pemberian:</label><input type="text" id="drug-route" placeholder="Contoh: Oral"></div>
-                        </div>
-                        <button type="submit" class="btn btn-success">Tambah Terapi</button>
-                    </form>
-                    <h4 style="margin-top: 30px; text-align: left; padding-left: 5px;">Terapi Aktif:</h4>
-                    <ul id="drug-therapy-list"></ul>
-                </div>
-                <button id="view-visits-btn" class="btn btn-primary">Lihat & Tambah Riwayat Kunjungan</button>
-                <button id="back-to-patients-from-detail" class="btn btn-secondary" style="margin-top: 10px;">Kembali ke Daftar Pasien</button>
+        </div>
+        <div id="edit-drug-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-drug-modal-btn">&times;</span>
+                <h2>Edit Terapi Obat</h2>
+                <form id="edit-drug-therapy-form">
+                    <input type="hidden" id="edit-drug-id">
+                    <label for="edit-drug-name">Nama Obat:</label><input type="text" id="edit-drug-name" required>
+                    <label for="edit-drug-dosage">Dosis:</label><input type="text" id="edit-drug-dosage">
+                    <label for="edit-drug-frequency">Frekuensi:</label><input type="text" id="edit-drug-frequency">
+                    <label for="edit-drug-route">Rute Pemberian:</label><input type="text" id="edit-drug-route">
+                    <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                </form>
             </div>
-            <div id="visit-history-section" style="display: none;">
-                <h2>Riwayat Kunjungan: <span id="visit-patient-name"></span></h2>
+        </div>
+        <div id="edit-nurse-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-nurse-modal-btn">&times;</span>
+                <h2>Edit Data Perawat</h2>
+                <form id="edit-nurse-form">
+                    <input type="hidden" id="edit-nurse-id">
+                    <label for="edit-nurse-name">Nama Perawat:</label><input type="text" id="edit-nurse-name" required>
+                    <label for="edit-nurse-dob">Tanggal Lahir:</label><input type="date" id="edit-nurse-dob" required>
+                    <label for="edit-nurse-id-field">ID Perawat:</label><input type="text" id="edit-nurse-id-field" required>
+                    <label for="edit-nurse-reg-number">Nomor Registrasi:</label><input type="text" id="edit-nurse-reg-number" required>
+                    <label for="edit-nurse-visit-area">Wilayah Kunjangan:</label><textarea id="edit-nurse-visit-area" rows="3"></textarea>
+                    <label for="edit-nurse-photo">Ganti Foto (Max 1MB):</label>
+                    <input type="file" id="edit-nurse-photo" accept="image/*">
+                    <hr>
+                    <h3>Informasi Akun Login</h3>
+                    <label for="edit-nurse-username">Username Akun:</label>
+                    <input type="text" id="edit-nurse-username" required>
+                    <label for="edit-nurse-password">Password Akun:</label>
+                    <input type="password" id="edit-nurse-password" placeholder="Biarkan kosong jika tidak ingin mengubah password">
+                    <p id="edit-nurse-error" style="color: #dc3545; display: none;">ID Perawat atau Username sudah terdaftar.</p>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button type="submit" class="btn btn-success" style="margin-top: 0;">Simpan Perubahan</button>
+                        <button type="button" id="cancel-edit-nurse-btn" class="btn btn-secondary" style="margin-top: 0;">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="service-price-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-price-modal-btn">&times;</span>
+                <h2 id="price-modal-title">Daftar Harga</h2>
                 <div class="card">
-                    <h3>Tambah Catatan Kunjungan Baru</h3>
-                    <form id="add-medical-record-form">
-                        <div class="form-grid">
-                            <div><label for="visit-date">Tanggal:</label><input type="date" id="visit-date" required></div>
-                            <div><label for="visit-time">Jam:</label><input type="time" id="visit-time" required></div>
-                        </div>
-                        <hr><h4>TTV</h4>
-                        <div class="form-grid">
-                            <div><label>Tek. Darah:</label><input type="text" id="blood-pressure" placeholder="120/80"></div>
-                            <div><label>Suhu:</label><input type="number" step="0.1" id="temperature" placeholder="36.5"></div>
-                            <div><label>Nadi:</label><input type="number" id="pulse" placeholder="80"></div>
-                            <div><label>Pernapasan:</label><input type="number" id="respiration" placeholder="20"></div>
-                        </div>
-                        <hr><h4>SOAP</h4>
-                        <label><strong>S:</strong></label><textarea id="soap-s" rows="3" required></textarea>
-                        <label><strong>O:</strong></label><textarea id="soap-o" rows="4" required></textarea>
-                        <label><strong>A:</strong></label><textarea id="soap-a" rows="3" required></textarea>
-                        <label><strong>P:</strong></label><textarea id="soap-p" rows="4" required></textarea>
+                    <h3>Daftar Harga Saat Ini</h3>
+                    <ul id="price-list"><li>Memuat harga...</li></ul>
+                </div>
+                <div id="add-edit-price-card" class="card" style="display: none;">
+                    <h3 id="add-edit-price-title">Tambah Harga Baru</h3>
+                    <form id="price-form">
+                        <input type="hidden" id="price-id">
+                        <label for="price-description">Deskripsi Harga (e.g., Paket Harian, Per Tindakan):</label>
+                        <input type="text" id="price-description" required>
+                        <label for="price-amount">Jumlah Harga (Rp):</label>
+                        <input type="number" id="price-amount" readonly>
+                        <label for="price-action-cost">Biaya Tindakan (Rp):</label>
+                        <input type="number" id="price-action-cost" placeholder="0">
+                        <label for="price-bhp-cost">Biaya BHP (Rp):</label>
+                        <input type="number" id="price-bhp-cost" placeholder="0">
+                        <label for="price-medicine-cost">Harga Obat (Rp):</label>
+                        <input type="number" id="price-medicine-cost" placeholder="0">
+                        <label for="price-travel-cost">Ongkos Perjalanan (Rp):</label>
+                        <input type="number" id="price-travel-cost" placeholder="0">
                         <hr>
-                        <label><strong>Foto Dokumentasi (Max 1MB):</strong></label><input type="file" id="visit-photo" accept="image/*">
-                        <label>Catatan Pemberian Obat Saat Kunjungan:</label><textarea id="medication-notes" rows="3"></textarea>
-                        <label for="visiting-nurse-name">Nama Perawat:</label>
-                        <input type="text" id="visiting-nurse-name" placeholder="Masukkan nama perawat yang berkunjung">
-                        <button type="submit" class="btn btn-success">Simpan Kunjungan</button>
+                        <div id="custom-costs-container"></div>
+                        <button type="button" id="add-custom-cost-btn" class="btn btn-pink" style="margin-bottom: 10px;">Tambahkan Biaya Lainnya</button>
+                        <button type="submit" class="btn btn-success">Simpan Harga</button>
                     </form>
                 </div>
-                <div class="card">
-                    <h3>Daftar Kunjungan Terdahulu</h3>
-                    <ul id="medical-record-list"></ul>
-                </div>
-                <button id="back-to-detail-btn" class="btn btn-secondary">Kembali ke Detail Pasien</button>
+                <button id="show-add-price-form-btn" class="btn btn-primary" style="margin-top: 10px;">Tambah Harga Baru</button>
             </div>
-        </main>
-
-        <!-- NEW: Section for Nurse Data -->
-        <main id="main-nurses-section" style="display: none;">
-            <h1>Data Perawat</h1>
-            <div id="nurse-list-view">
-                 <button id="show-add-nurse-btn" class="btn btn-primary" style="margin-bottom: 20px;">Tambah Perawat Baru</button>
-                 <div id="add-nurse-card" class="card" style="display: none;">
-                    <h2>Tambah Perawat Baru</h2>
-                    <form id="add-nurse-form">
-                        <label for="nurse-name">Nama Perawat:</label><input type="text" id="nurse-name" required>
-                        <label for="nurse-dob">Tanggal Lahir:</label><input type="date" id="nurse-dob" required>
-                        <label for="nurse-id">ID Perawat:</label><input type="text" id="nurse-id" required>
-                        <label for="nurse-reg-number">Nomor Registrasi:</label><input type="text" id="nurse-reg-number" required>
-                        <label for="nurse-visit-area">Wilayah Kunjungan:</label><textarea id="nurse-visit-area" rows="3"></textarea>
-                        <label for="nurse-photo">Foto Perawat (Max 1MB):</label>
-                        <input type="file" id="nurse-photo" accept="image/*">
-                        <div style="display: flex; gap: 10px; margin-top: 10px;">
-                            <button type="submit" class="btn btn-success" style="margin-top: 0;">Simpan Perawat</button>
-                            <button type="button" id="cancel-add-nurse-btn" class="btn btn-secondary" style="margin-top: 0;">Batal</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card">
-                    <div class="list-header">
-                        <h2>Daftar Perawat</h2>
-                        <input type="text" id="search-nurse" placeholder="Cari nama perawat...">
-                    </div>
-                    <ul id="nurse-list"></ul>
-                </div>
-            </div>
-            <div id="nurse-detail-view" style="display: none;">
-                <h2 id="nurse-detail-name"></h2>
-                <div id="nurse-detail-content">
-                    <div id="nurse-info-display" class="nurse-info-display"></div>
-                    <div id="nurse-photo-container">
-                        <img id="nurse-detail-photo" src="" alt="Foto Perawat">
-                    </div>
-                </div>
-                <button id="back-to-nurses-btn" class="btn btn-secondary" style="margin-top: 20px;">Kembali ke Daftar Perawat</button>
-            </div>
-        </main>
-
-        <!-- NEW: Section for Administration -->
-        <main id="main-admin-section" style="display: none;">
-            <h1>Administrasi</h1>
-            <div class="card">
-                <h2>Daftar Persuratan</h2>
-                <ul id="admin-list">
-                    <li><a href="#" class="admin-link">Surat Persetujuan Tindakan</a></li>
-                    <li><a href="#" class="admin-link">SOP (Standard Operating Procedure)</a></li>
-                    <li><a href="#" class="admin-link">Surat Kontrak Kerja Sama</a></li>
-                </ul>
-            </div>
-        </main>
-    </div>
-
-    <!-- Modals -->
-    <div id="edit-patient-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="close-modal-btn">&times;</span>
-            <h2>Edit Data Pasien</h2>
-            <form id="edit-patient-form">
-                <label for="edit-patient-rm">No. Rekam Medik:</label><input type="text" id="edit-patient-rm" readonly>
-                <label for="edit-patient-name">Nama Pasien:</label><input type="text" id="edit-patient-name" required>
-                <label for="edit-patient-dob">Tanggal Lahir:</label><input type="date" id="edit-patient-dob" required>
-                <label for="edit-patient-gender">Jenis Kelamin:</label>
-                <select id="edit-patient-gender" required>
-                    <option value="">Pilih Jenis Kelamin</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                </select>
-                <label for="edit-patient-address">Alamat:</label><textarea id="edit-patient-address" rows="3" required></textarea>
-                <label for="edit-patient-allergies">Riwayat Alergi:</label><textarea id="edit-patient-allergies" rows="3"></textarea>
-                <label for="edit-patient-initial-assessment">Asesmen Awal:</label>
-                <textarea id="edit-patient-initial-assessment" rows="4"></textarea>
-                <label for="edit-patient-assessing-nurse">Nama Perawat (Asesmen):</label>
-                <input type="text" id="edit-patient-assessing-nurse">
-                <button type="submit" class="btn btn-success">Simpan Perubahan</button>
-            </form>
         </div>
-    </div>
-    <div id="edit-drug-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="close-drug-modal-btn">&times;</span>
-            <h2>Edit Terapi Obat</h2>
-            <form id="edit-drug-therapy-form">
-                <input type="hidden" id="edit-drug-id">
-                <label for="edit-drug-name">Nama Obat:</label><input type="text" id="edit-drug-name" required>
-                <label for="edit-drug-dosage">Dosis:</label><input type="text" id="edit-drug-dosage">
-                <label for="edit-drug-frequency">Frekuensi:</label><input type="text" id="edit-drug-frequency">
-                <label for="edit-drug-route">Rute Pemberian:</label><input type="text" id="edit-drug-route">
-                <button type="submit" class="btn btn-success">Simpan Perubahan</button>
-            </form>
+        <div id="price-details-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-price-details-modal-btn">&times;</span>
+                <h2 id="price-details-title">Rincian Harga</h2>
+                <div class="card">
+                    <div class="price-detail-item"><strong>Deskripsi:</strong> <span id="detail-price-description"></span></div>
+                    <div class="price-detail-item"><strong>Total Harga:</strong> Rp <span id="detail-price-amount"></span></div>
+                    <hr>
+                    <div class="price-detail-item"><strong>Biaya Tindakan:</strong> Rp <span id="detail-price-action-cost"></span></div>
+                    <div class="price-detail-item"><strong>Biaya BHP:</strong> Rp <span id="detail-price-bhp-cost"></span></div>
+                    <div class="price-detail-item"><strong>Harga Obat:</strong> Rp <span id="detail-price-medicine-cost"></span></div>
+                    <div class="price-detail-item"><strong>Ongkos Perjalanan:</strong> Rp <span id="detail-price-travel-cost"></span></div>
+                    <div id="detail-custom-costs-container"></div>
+                    <hr>
+                    <button id="edit-price-details-btn" class="btn btn-warning">Edit Biaya Lainnya</button>
+                    <button id="print-invoice-btn" class="btn btn-primary" style="margin-top: 10px;">Cetak Invoice</button>
+                </div>
+            </div>
         </div>
-    </div>
-    <!-- NEW: Edit Nurse Modal -->
-    <div id="edit-nurse-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="close-nurse-modal-btn">&times;</span>
-            <h2>Edit Data Perawat</h2>
-            <form id="edit-nurse-form">
-                <input type="hidden" id="edit-nurse-id">
-                <label for="edit-nurse-name">Nama Perawat:</label><input type="text" id="edit-nurse-name" required>
-                <label for="edit-nurse-dob">Tanggal Lahir:</label><input type="date" id="edit-nurse-dob" required>
-                <label for="edit-nurse-id-field">ID Perawat:</label><input type="text" id="edit-nurse-id-field" required>
-                <label for="edit-nurse-reg-number">Nomor Registrasi:</label><input type="text" id="edit-nurse-reg-number" required>
-                <label for="edit-nurse-visit-area">Wilayah Kunjungan:</label><textarea id="edit-nurse-visit-area" rows="3"></textarea>
-                <label for="edit-nurse-photo">Ganti Foto (Max 1MB):</label>
-                <input type="file" id="edit-nurse-photo" accept="image/*">
-                <button type="submit" class="btn btn-success">Simpan Perubahan</button>
-            </form>
+
+        <div id="invoice-print-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" id="close-invoice-print-modal-btn">&times;</span>
+                <h2>Cetak Invoice</h2>
+                <div class="card">
+                    <h3>Pilih Perawat & Pasien</h3>
+                    <label for="select-invoice-nurse">Pilih Perawat:</label>
+                    <select id="select-invoice-nurse" class="w-full p-2 border rounded mb-4">
+                        <option value="">-- Pilih Perawat --</option>
+                    </select>
+
+                    <label for="select-invoice-patient">Pilih Pasien:</label>
+                    <select id="select-invoice-patient" class="w-full p-2 border rounded mb-4">
+                        <option value="">-- Pilih Pasien --</option>
+                    </select>
+
+                    <p id="invoice-selection-error" style="color: #dc3545; display: none; margin-bottom: 10px;">Mohon pilih perawat dan pasien.</p>
+
+                    <button id="generate-pdf-btn" class="btn btn-success" style="margin-top: 10px;">Cetak PDF Invoice</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERBAIKAN: Wrapper untuk konten PDF yang akan dirender -->
+        <div id="invoice-pdf-content-wrapper">
+             <div id="invoice-pdf-content">
+                <!-- Konten akan dibuat secara dinamis di sini -->
+             </div>
+        </div>
+
+        <div id="admin-password-modal" class="modal">
+            <div class="modal-content" style="max-width: 400px;">
+                <span class="close-btn" id="close-admin-password-modal-btn">&times;</span>
+                <h2>Otentikasi Admin (Aponk)</h2>
+                <form id="admin-password-form">
+                    <label for="admin-username">Username:</label>
+                    <input type="text" id="admin-username" required>
+                    <label for="admin-password">Password:</label>
+                    <input type="password" id="admin-password" required>
+                    <p id="admin-password-error" style="color: #dc3545; display: none;">Username atau password salah!</p>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Login</button>
+                </form>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, where, orderBy, serverTimestamp, doc, deleteDoc, getDocs, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyBNlEqwNBYi7uYdDy4iXd7sh1JX4PjIk5M",
             authDomain: "lifedata-9a38d.firebaseapp.com",
             projectId: "lifedata-9a38d",
-            storageBucket: "lifedata-9a38d.firebasestorage.app",
+            storageBucket: "lifedata-9a38d.appspot.com",
             messagingSenderId: "85081493262",
             appId: "1:85081493262:web:61201bacb087fc34cc915f"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         // --- Element References ---
+        const loginSection = document.getElementById('login-section');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const appWrapper = document.getElementById('app-wrapper');
+        const logoutButton = document.getElementById('nav-logout');
+        const currentUserImgDesktop = document.getElementById('current-user-img');
+        const currentUsernameDesktop = document.getElementById('current-username');
+        const currentUserImgMobile = document.getElementById('current-user-img-mobile');
+        const currentUsernameMobile = document.getElementById('current-username-mobile');
         const sections = {
             management: document.getElementById('patient-management-section'),
             detail: document.getElementById('patient-detail-section'),
@@ -580,16 +1005,18 @@
         const mainSections = {
             patients: document.getElementById('main-patients-section'),
             nurses: document.getElementById('main-nurses-section'),
+            services: document.getElementById('main-services-section'),
             admin: document.getElementById('main-admin-section')
         };
         const navLinksContainer = document.getElementById('nav-links-container');
         const navButtons = {
             patients: document.getElementById('nav-patients'),
             nurses: document.getElementById('nav-nurses'),
-            admin: document.getElementById('nav-admin')
+            services: document.getElementById('nav-services'),
+            admin: document.getElementById('nav-admin'),
+            logout: document.getElementById('nav-logout')
         };
         const hamburgerBtn = document.getElementById('hamburger-btn');
-
         const patientList = document.getElementById('patient-list');
         const addPatientForm = document.getElementById('add-patient-form');
         const patientInfoDisplay = document.getElementById('patient-info-display');
@@ -600,13 +1027,15 @@
         const editPatientModal = document.getElementById('edit-patient-modal');
         const editPatientForm = document.getElementById('edit-patient-form');
         const searchPatientInput = document.getElementById('search-patient');
+        const addDrugModal = document.getElementById('add-drug-modal');
         const editDrugModal = document.getElementById('edit-drug-modal');
+        const showAddDrugTherapyBtn = document.getElementById('show-add-drug-therapy-btn');
+        const closeAddDrugModalBtn = document.getElementById('close-add-drug-modal-btn');
         const editDrugTherapyForm = document.getElementById('edit-drug-therapy-form');
-        const closeDrugModalBtn = document.getElementById('close-drug-modal-btn');
         const showAddPatientBtn = document.getElementById('show-add-patient-btn');
         const addPatientCard = document.getElementById('add-patient-card');
         const cancelAddPatientBtn = document.getElementById('cancel-add-patient-btn');
-
+        const deletePatientBtn = document.getElementById('delete-patient-btn');
         const nurseListView = document.getElementById('nurse-list-view');
         const nurseDetailView = document.getElementById('nurse-detail-view');
         const nurseList = document.getElementById('nurse-list');
@@ -617,46 +1046,272 @@
         const nurseInfoDisplay = document.getElementById('nurse-info-display');
         const searchNurseInput = document.getElementById('search-nurse');
         const backToNursesBtn = document.getElementById('back-to-nurses-btn');
-        // NEW: Edit Nurse Modal References
         const editNurseModal = document.getElementById('edit-nurse-modal');
         const editNurseForm = document.getElementById('edit-nurse-form');
-        const closeNurseModalBtn = document.getElementById('close-nurse-modal-btn');
-
+        const cancelEditNurseBtn = document.getElementById('cancel-edit-nurse-btn');
+        const editNurseUsernameInput = document.getElementById('edit-nurse-username');
+        const editNursePasswordInput = document.getElementById('edit-nurse-password');
+        const editNursePhotoInput = document.getElementById('edit-nurse-photo');
+        const editNurseError = document.getElementById('edit-nurse-error');
+        const nurseIdInput = document.getElementById('nurse-id');
+        const addNurseError = document.getElementById('add-nurse-error');
+        const newNurseUsernameInput = document.getElementById('new-nurse-username');
+        const newNursePasswordInput = document.getElementById('new-nurse-password');
+        const assessingNurseInput = document.getElementById('patient-assessing-nurse');
+        const assessingNurseSuggestions = document.getElementById('assessing-nurse-suggestions');
+        const visitingNurseInput = document.getElementById('visiting-nurse-name');
+        const visitingNurseSuggestions = document.getElementById('visiting-nurse-suggestions');
+        const editAssessingNurseInput = document.getElementById('edit-patient-assessing-nurse');
+        const editAssessingNurseSuggestions = document.getElementById('edit-assessing-nurse-suggestions');
+        const servicesList = document.getElementById('services-list');
+        const servicePriceModal = document.getElementById('service-price-modal');
+        const priceModalTitle = document.getElementById('price-modal-title');
+        const priceList = document.getElementById('price-list');
+        const priceForm = document.getElementById('price-form');
+        const addEditPriceTitle = document.getElementById('add-edit-price-title');
+        const priceDetailsModal = document.getElementById('price-details-modal');
+        const closePriceDetailsModalBtn = document.getElementById('close-price-details-modal-btn');
+        const detailPriceDescription = document.getElementById('detail-price-description');
+        const detailPriceAmount = document.getElementById('detail-price-amount');
+        const detailPriceActionCost = document.getElementById('detail-price-action-cost');
+        const detailPriceBhpCost = document.getElementById('detail-price-bhp-cost');
+        const detailPriceMedicineCost = document.getElementById('detail-price-medicine-cost');
+        const detailPriceTravelCost = document.getElementById('detail-price-travel-cost');
+        const editPriceDetailsBtn = document.getElementById('edit-price-details-btn');
+        const detailCustomCostsContainer = document.getElementById('detail-custom-costs-container');
+        const priceActionCostInput = document.getElementById('price-action-cost');
+        const priceBhpCostInput = document.getElementById('price-bhp-cost');
+        const priceMedicineCostInput = document.getElementById('price-medicine-cost');
+        const priceTravelCostInput = document.getElementById('price-travel-cost');
+        const priceAmountInput = document.getElementById('price-amount');
+        const showAddPriceFormBtn = document.getElementById('show-add-price-form-btn');
+        const addEditPriceCard = document.getElementById('add-edit-price-card');
+        const addCustomCostBtn = document.getElementById('add-custom-cost-btn');
+        const customCostsContainer = document.getElementById('custom-costs-container');
+        const printInvoiceBtn = document.getElementById('print-invoice-btn');
+        const invoicePrintModal = document.getElementById('invoice-print-modal');
+        const closeInvoicePrintModalBtn = document.getElementById('close-invoice-print-modal-btn');
+        const selectInvoiceNurse = document.getElementById('select-invoice-nurse');
+        const selectInvoicePatient = document.getElementById('select-invoice-patient');
+        const generatePdfBtn = document.getElementById('generate-pdf-btn');
+        const invoiceSelectionError = document.getElementById('invoice-selection-error');
+        const invoicePdfContent = document.getElementById('invoice-pdf-content');
+        const adminPasswordModal = document.getElementById('admin-password-modal');
+        const adminPasswordForm = document.getElementById('admin-password-form');
+        const adminPasswordError = document.getElementById('admin-password-error');
+        const closeAdminPasswordModalBtn = document.getElementById('close-admin-password-modal-btn');
 
         let currentPatientId = null;
         let currentPatientName = '';
+        let currentNurseId = null;
+        let currentServiceId = null;
         let allPatients = [];
         let allNurses = [];
         let totalPatientsChartInstance;
         let genderChartInstance;
+        let loggedInNurseId = null;
+        let loggedInNurseName = null;
+        let loggedInNursePhoto = null;
+        let currentInvoicePriceData = null;
+        let selectedInvoiceNurse = null;
+        let selectedInvoicePatient = null;
 
-        // --- Navigation Logic ---
-        hamburgerBtn.addEventListener('click', () => {
-            navLinksContainer.classList.toggle('is-open');
+        const ADMIN_UTAMA_UID_FIREBASE_AUTH = "GAQ0yO9WviSHpdAHRKXldETC4N32";
+        let isMainAdminLoggedIn = false;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                if (user.uid === ADMIN_UTAMA_UID_FIREBASE_AUTH) {
+                    isMainAdminLoggedIn = true;
+                    loggedInNurseId = 'administrator_utama_firebase_marker';
+                    loggedInNurseName = 'Administrator Utama (Life Care)';
+                    loggedInNursePhoto = 'https://github.com/Aponk04/logilivecare/blob/main/LOGO%203.png?raw=true';
+                    updateLoggedInUserInfo(loggedInNurseName, loggedInNursePhoto);
+                } else {
+                    console.warn("Unauthorized Firebase Auth user detected. Signing out.");
+                    await signOut(auth);
+                    isMainAdminLoggedIn = false;
+                }
+            } else {
+                isMainAdminLoggedIn = false;
+            }
         });
+
+        const updateLoggedInUserInfo = (name, photoURL) => {
+            currentUsernameDesktop.textContent = name;
+            currentUsernameMobile.textContent = name;
+            if (photoURL) {
+                currentUserImgDesktop.src = photoURL;
+                currentUserImgMobile.src = photoURL;
+            } else {
+                currentUserImgDesktop.src = 'https://via.placeholder.com/30/f8f9fa/007bff?text=U';
+                currentUserImgMobile.src = 'https://via.placeholder.com/30/f8f9fa/007bff?text=U';
+            }
+        };
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username').value;
+            const passwordInput = document.getElementById('password').value;
+            loginError.style.display = 'none';
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, usernameInput, passwordInput);
+                const user = userCredential.user;
+                if (user.uid === ADMIN_UTAMA_UID_FIREBASE_AUTH) {
+                    loggedInNurseId = 'administrator_utama_firebase_marker';
+                    loggedInNurseName = 'Administrator Utama';
+                    loggedInNursePhoto = 'https://github.com/Aponk04/logilivecare/blob/main/LOGO%203.png?raw=true';
+                    isMainAdminLoggedIn = true;
+                    loginSection.style.display = 'none';
+                    appWrapper.style.display = 'block';
+                    initializeAppFunctions();
+                    updateLoggedInUserInfo(loggedInNurseName, loggedInNursePhoto);
+                    alert(`Selamat datang, ${loggedInNurseName}!`);
+                    return;
+                } else {
+                    await signOut(auth);
+                    loginError.textContent = 'Akses ditolak.';
+                    loginError.style.display = 'block';
+                    return;
+                }
+            } catch (authError) {
+                try {
+                    const q = query(collection(db, "nurses"), where("username", "==", usernameInput), where("password", "==", passwordInput));
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        const nurseDoc = querySnapshot.docs[0];
+                        loggedInNurseId = nurseDoc.id;
+                        loggedInNurseName = nurseDoc.data().name;
+                        loggedInNursePhoto = nurseDoc.data().photoURL || '';
+                        isMainAdminLoggedIn = false;
+                        loginSection.style.display = 'none';
+                        appWrapper.style.display = 'block';
+                        initializeAppFunctions();
+                        updateLoggedInUserInfo(loggedInNurseName, loggedInNursePhoto);
+                        alert(`Selamat datang, ${loggedInNurseName}!`);
+                    } else {
+                        loginError.textContent = 'Username atau password salah!';
+                        loginError.style.display = 'block';
+                    }
+                } catch (firestoreError) {
+                    console.error("Error during Firestore login: ", firestoreError);
+                    loginError.textContent = 'Terjadi kesalahan. Coba lagi.';
+                    loginError.style.display = 'block';
+                }
+            }
+        });
+
+        logoutButton.addEventListener('click', async () => {
+            if (confirm("Apakah Anda yakin ingin logout?")) {
+                if (isMainAdminLoggedIn) {
+                    try {
+                        await signOut(auth);
+                    } catch (error) {
+                        console.error("Error signing out: ", error);
+                        alert('Gagal logout. Silakan coba lagi.');
+                        return;
+                    }
+                }
+                loggedInNurseId = null;
+                loggedInNurseName = null;
+                loggedInNursePhoto = null;
+                isMainAdminLoggedIn = false;
+                appWrapper.style.display = 'none';
+                loginSection.style.display = 'flex';
+                loginForm.reset();
+                loginError.style.display = 'none';
+                if (totalPatientsChartInstance) totalPatientsChartInstance.destroy();
+                if (genderChartInstance) genderChartInstance.destroy();
+                updateLoggedInUserInfo('Guest', '');
+            }
+        });
+        
+        const authenticateAdmin = (action) => {
+            return new Promise(async (resolve) => {
+                if (isMainAdminLoggedIn) {
+                    resolve(true);
+                    return;
+                }
+                let aponkDoc;
+                try {
+                    const qAponk = query(collection(db, "nurses"), where("username", "==", "Aponk"));
+                    const aponkSnapshot = await getDocs(qAponk);
+                    if (!aponkSnapshot.empty) {
+                        aponkDoc = aponkSnapshot.docs[0].data();
+                    }
+                } catch (error) {
+                    console.error("Error fetching Aponk data from Firestore: ", error);
+                    alert("Terjadi kesalahan saat memverifikasi akun Aponk. Coba lagi.");
+                    resolve(false);
+                    return;
+                }
+                const isCurrentNurseAponk = loggedInNurseName && loggedInNurseName.includes("Aponk");
+                if (isCurrentNurseAponk && aponkDoc && loggedInNurseId === aponkSnapshot.docs[0].id) {
+                    if (!confirm(`Operasi ini memerlukan otentikasi admin. Apakah Anda memiliki ijin untuk ${action} data ini?`)) {
+                        resolve(false);
+                        return;
+                    }
+                    adminPasswordModal.style.display = 'block';
+                    adminPasswordForm.reset();
+                    adminPasswordError.style.display = 'none';
+                    document.getElementById('admin-username').focus();
+                    const formSubmitHandler = async (eSubmit) => {
+                        eSubmit.preventDefault();
+                        const username = document.getElementById('admin-username').value;
+                        const password = document.getElementById('admin-password').value;
+                        if (username === aponkDoc.username && password === aponkDoc.password) {
+                            adminPasswordModal.style.display = 'none';
+                            resolve(true);
+                        } else {
+                            adminPasswordError.textContent = 'Username atau password salah!';
+                            adminPasswordError.style.display = 'block';
+                            resolve(false);
+                        }
+                        adminPasswordForm.removeEventListener('submit', formSubmitHandler);
+                        closeAdminPasswordModalBtn.removeEventListener('click', closeHandler);
+                    };
+                    const closeHandler = () => {
+                        adminPasswordModal.style.display = 'none';
+                        adminPasswordForm.removeEventListener('submit', formSubmitHandler);
+                        closeAdminPasswordModalBtn.removeEventListener('click', closeHandler);
+                        resolve(false);
+                    };
+                    adminPasswordForm.addEventListener('submit', formSubmitHandler);
+                    closeAdminPasswordModalBtn.addEventListener('click', closeHandler);
+                    return;
+                }
+                alert(`Operasi ini memerlukan hak akses administrator. Anda tidak memiliki izin untuk ${action} data ini.`);
+                resolve(false);
+            });
+        };
+
+        const initializeAppFunctions = () => {
+            setInitialMedicalRecordNumber();
+            listenForPatients();
+            listenForNurses();
+            handleNavigation('patients');
+        };
+
+        hamburgerBtn.addEventListener('click', () => navLinksContainer.classList.toggle('is-open'));
 
         const handleNavigation = (targetSection) => {
             Object.values(mainSections).forEach(section => section.style.display = 'none');
             mainSections[targetSection].style.display = 'block';
-
             Object.values(navButtons).forEach(btn => btn.classList.remove('active'));
-            navButtons[targetSection].classList.add('active');
-
-            if (targetSection !== 'patients') {
-                 showSubSection('management');
+            if (targetSection !== 'logout') {
+                navButtons[targetSection].classList.add('active');
             }
-            if (navLinksContainer.classList.contains('is-open')) {
-                navLinksContainer.classList.remove('is-open');
-            }
+            if (navLinksContainer.classList.contains('is-open')) navLinksContainer.classList.remove('is-open');
         };
 
         navButtons.patients.addEventListener('click', () => handleNavigation('patients'));
         navButtons.nurses.addEventListener('click', () => handleNavigation('nurses'));
+        navButtons.services.addEventListener('click', () => handleNavigation('services'));
         navButtons.admin.addEventListener('click', () => handleNavigation('admin'));
 
         const showSubSection = (sectionName) => {
             Object.values(sections).forEach(section => section.style.display = 'none');
-            sections[sectionName].style.display = 'block';
+            if(sections[sectionName]) sections[sectionName].style.display = 'block';
         };
 
         document.getElementById('back-to-patients-from-detail').addEventListener('click', () => showSubSection('management'));
@@ -666,7 +1321,6 @@
         });
         document.getElementById('back-to-detail-btn').addEventListener('click', () => showSubSection('detail'));
 
-        // --- Generate Medical Record Number ---
         const generateMedicalRecordNumber = () => {
             const now = new Date();
             const year = now.getFullYear().toString().slice(-2);
@@ -679,17 +1333,16 @@
             document.getElementById('patient-rm').value = generateMedicalRecordNumber();
         };
 
-        // --- Patient Management ---
         showAddPatientBtn.addEventListener('click', () => {
             addPatientCard.style.display = 'block';
             showAddPatientBtn.style.display = 'none';
+            setInitialMedicalRecordNumber();
         });
 
         cancelAddPatientBtn.addEventListener('click', () => {
             addPatientCard.style.display = 'none';
             showAddPatientBtn.style.display = 'block';
             addPatientForm.reset();
-            setInitialMedicalRecordNumber();
         });
 
         addPatientForm.addEventListener('submit', async (e) => {
@@ -703,21 +1356,19 @@
                     address: document.getElementById('patient-address').value,
                     allergies: document.getElementById('patient-allergies').value,
                     initial_assessment: document.getElementById('patient-initial-assessment').value,
-                    assessing_nurse: document.getElementById('patient-assessing-nurse').value,
+                    assessing_nurse: assessingNurseInput.value,
                     createdAt: serverTimestamp()
                 });
                 alert('Pasien berhasil ditambahkan!');
                 addPatientForm.reset();
                 addPatientCard.style.display = 'none';
                 showAddPatientBtn.style.display = 'block';
-                setInitialMedicalRecordNumber();
             } catch (error) {
                 console.error("Error adding patient: ", error);
                 alert('Gagal menambahkan pasien.');
             }
         });
-        
-        // --- Search and Display Patient List ---
+
         const renderPatientList = () => {
             patientList.innerHTML = '';
             const searchTerm = searchPatientInput.value.toLowerCase();
@@ -727,12 +1378,10 @@
                 const rmMatch = patient.rm_number && patient.rm_number.toLowerCase().includes(searchTerm);
                 return nameMatch || rmMatch;
             });
-
             if (filteredPatients.length === 0) {
                 patientList.innerHTML = '<li>Tidak ada pasien yang cocok atau belum ada data.</li>';
                 return;
             }
-
             filteredPatients.forEach((doc) => {
                 const patient = doc.data();
                 const li = document.createElement('li');
@@ -743,40 +1392,26 @@
                     </div>
                     <div class="list-item-actions">
                         <button class="btn btn-primary" data-id="${doc.id}" data-name="${patient.name}" style="padding: 6px 12px;">Detail</button>
-                        <button class="btn btn-danger" data-id="${doc.id}" data-name="${patient.name}" style="padding: 6px 12px;">Hapus</button>
                     </div>`;
                 patientList.appendChild(li);
             });
         };
-        
-        searchPatientInput.addEventListener('input', renderPatientList);
 
+        searchPatientInput.addEventListener('input', renderPatientList);
         const listenForPatients = () => {
-            const q = query(collection(db, "patients"));
+            const q = query(collection(db, "patients"), orderBy("name"));
             onSnapshot(q, (snapshot) => {
-                let docs = snapshot.docs;
-                docs.sort((a, b) => {
-                    const nameA = a.data().name.toLowerCase();
-                    const nameB = b.data().name.toLowerCase();
-                    if (nameA < nameB) return -1;
-                    if (nameA > nameB) return 1;
-                    return 0;
-                });
-                allPatients = docs;
+                allPatients = snapshot.docs;
                 renderPatientList();
                 updateDashboardCharts(allPatients.map(doc => doc.data()));
-            }, (error) => {
-                console.error("Error listening for patient documents: ", error);
-            });
+            }, (error) => console.error("Error listening for patient documents: ", error));
         };
 
         patientList.addEventListener('click', async (e) => {
             const target = e.target;
             if (target.tagName !== 'BUTTON') return;
-
             const patientId = target.dataset.id;
             const patientName = target.dataset.name;
-
             if (target.classList.contains('btn-primary')) {
                 currentPatientId = patientId;
                 currentPatientName = patientName;
@@ -784,12 +1419,6 @@
                 displayDrugTherapies(patientId);
                 displayMedicalRecords(patientId);
                 showSubSection('detail');
-            }
-
-            if (target.classList.contains('btn-danger')) {
-                if (confirm(`Yakin ingin menghapus ${patientName} dan semua datanya?`)) {
-                    await deletePatientAndRecords(patientId);
-                }
             }
         });
 
@@ -812,7 +1441,6 @@
             }
         };
 
-        // --- Patient Detail & Edit ---
         const displayPatientDetails = async (patientId) => {
             try {
                 const docRef = doc(db, "patients", patientId);
@@ -825,13 +1453,11 @@
                         <p><strong>Tgl Lahir:</strong> ${patient.dob}</p>
                         <p><strong>Jenis Kelamin:</strong> ${patient.gender || 'N/A'}</p>
                         <p><strong>Alamat:</strong> ${patient.address}</p>
-                        <p><strong>Alergi:</strong> ${patient.allergies || 'Tidak ada data'}</p> 
+                        <p><strong>Alergi:</strong> ${patient.allergies || 'Tidak ada data'}</p>
                         <hr>
                         <p><strong>Asesmen Awal:</strong><br>${(patient.initial_assessment || 'Tidak ada data').replace(/\n/g, '<br>')}</p>
                         <p><strong>Diasesmen oleh:</strong> ${patient.assessing_nurse || 'Tidak ada data'}</p>
                     `;
-                } else {
-                    console.log("No such document!");
                 }
             } catch (error) {
                 console.error("Error getting patient details: ", error);
@@ -839,19 +1465,31 @@
         };
 
         document.getElementById('edit-patient-btn').addEventListener('click', async () => {
-            const docRef = doc(db, "patients", currentPatientId);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const patient = docSnap.data();
-                document.getElementById('edit-patient-rm').value = patient.rm_number || '';
-                document.getElementById('edit-patient-name').value = patient.name;
-                document.getElementById('edit-patient-dob').value = patient.dob;
-                document.getElementById('edit-patient-gender').value = patient.gender || '';
-                document.getElementById('edit-patient-address').value = patient.address;
-                document.getElementById('edit-patient-allergies').value = patient.allergies || ''; 
-                document.getElementById('edit-patient-initial-assessment').value = patient.initial_assessment || '';
-                document.getElementById('edit-patient-assessing-nurse').value = patient.assessing_nurse || '';
-                editPatientModal.style.display = 'block';
+            const hasPermission = await authenticateAdmin('mengedit');
+            if (hasPermission) {
+                const docRef = doc(db, "patients", currentPatientId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const patient = docSnap.data();
+                    document.getElementById('edit-patient-rm').value = patient.rm_number || '';
+                    document.getElementById('edit-patient-name').value = patient.name;
+                    document.getElementById('edit-patient-dob').value = patient.dob;
+                    document.getElementById('edit-patient-gender').value = patient.gender || '';
+                    document.getElementById('edit-patient-address').value = patient.address;
+                    document.getElementById('edit-patient-allergies').value = patient.allergies || '';
+                    document.getElementById('edit-patient-initial-assessment').value = patient.initial_assessment || '';
+                    editAssessingNurseInput.value = patient.assessing_nurse || '';
+                    editPatientModal.style.display = 'block';
+                }
+            }
+        });
+
+        deletePatientBtn.addEventListener('click', async () => {
+            const hasPermission = await authenticateAdmin('menghapus');
+            if (hasPermission) {
+                if (confirm(`Yakin ingin menghapus ${currentPatientName} dan semua datanya?`)) {
+                    await deletePatientAndRecords(currentPatientId);
+                }
             }
         });
 
@@ -866,7 +1504,7 @@
                     address: document.getElementById('edit-patient-address').value,
                     allergies: document.getElementById('edit-patient-allergies').value,
                     initial_assessment: document.getElementById('edit-patient-initial-assessment').value,
-                    assessing_nurse: document.getElementById('edit-patient-assessing-nurse').value
+                    assessing_nurse: editAssessingNurseInput.value
                 });
                 alert('Data pasien berhasil diperbarui!');
                 editPatientModal.style.display = 'none';
@@ -877,9 +1515,15 @@
             }
         });
 
-        document.getElementById('close-modal-btn').addEventListener('click', () => editPatientModal.style.display = 'none');
-        
-        // --- Drug Therapy ---
+        document.getElementById('close-patient-modal-btn').addEventListener('click', () => editPatientModal.style.display = 'none');
+
+        showAddDrugTherapyBtn.addEventListener('click', () => {
+            addDrugModal.style.display = 'block';
+        });
+        closeAddDrugModalBtn.addEventListener('click', () => {
+            addDrugModal.style.display = 'none';
+        });
+
         addDrugTherapyForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentPatientId) return;
@@ -894,8 +1538,10 @@
                     createdAt: serverTimestamp()
                 });
                 addDrugTherapyForm.reset();
+                addDrugModal.style.display = 'none';
             } catch (error) {
                 console.error("Error adding drug therapy: ", error);
+                alert('Gagal menambahkan terapi obat.');
             }
         });
 
@@ -903,36 +1549,18 @@
             const q = query(collection(db, "drugTherapies"), where("patientId", "==", patientId));
             onSnapshot(q, (snapshot) => {
                 drugTherapyList.innerHTML = '';
-                if (snapshot.empty) { 
-                    drugTherapyList.innerHTML = '<li>Belum ada terapi.</li>'; 
-                    return; 
-                }
-                
+                if (snapshot.empty) { drugTherapyList.innerHTML = '<li>Belum ada terapi.</li>'; return; }
                 const therapies = snapshot.docs.sort((a, b) => {
-                    const statusA = a.data().status === 'stopped' ? 1 : 0;
-                    const statusB = b.data().status === 'stopped' ? 1 : 0;
-                    if (statusA !== statusB) {
-                        return statusA - statusB;
-                    }
-                    const timeA = a.data().createdAt?.toDate() || 0;
-                    const timeB = b.data().createdAt?.toDate() || 0;
+                    const statusA = a.data().status === 'stopped' ? 1 : 0, statusB = b.data().status === 'stopped' ? 1 : 0;
+                    if (statusA !== statusB) return statusA - statusB;
+                    const timeA = a.data().createdAt?.toDate() || 0, timeB = b.data().createdAt?.toDate() || 0;
                     return timeB - timeA;
                 });
-
                 therapies.forEach((doc) => {
-                    const therapy = doc.data();
-                    const li = document.createElement('li');
-                    
-                    if (therapy.status === 'stopped') {
-                        li.classList.add('therapy-stopped');
-                    }
-
+                    const therapy = doc.data(); const li = document.createElement('li');
+                    if (therapy.status === 'stopped') li.classList.add('therapy-stopped');
                     li.innerHTML = `
-                        <div class="list-item-info">
-                            <strong>${therapy.name}</strong> (${therapy.dosage || 'N/A'})
-                            <br>
-                            <small>${therapy.frequency || 'N/A'}, via ${therapy.route || 'N/A'}</small>
-                        </div>
+                        <div class="list-item-info"><strong>${therapy.name}</strong> (${therapy.dosage || 'N/A'})<br><small>${therapy.frequency || 'N/A'}, via ${therapy.route || 'N/A'}</small></div>
                         <div class="list-item-actions">
                             <button class="btn btn-primary edit-therapy-btn" data-id="${doc.id}" style="padding: 4px 8px; font-size: 12px;" ${therapy.status === 'stopped' ? 'disabled' : ''}>Edit</button>
                             <button class="btn btn-warning stop-therapy-btn" data-id="${doc.id}" style="padding: 4px 8px; font-size: 12px;" ${therapy.status === 'stopped' ? 'disabled' : ''}>Hentikan</button>
@@ -940,20 +1568,15 @@
                         </div>`;
                     drugTherapyList.appendChild(li);
                 });
-            }, (error) => {
-                console.error("Error in drugTherapies snapshot listener: ", error);
-            });
+            }, (error) => console.error("Error in drugTherapies snapshot listener: ", error));
         };
 
         drugTherapyList.addEventListener('click', async (e) => {
-            const target = e.target;
-            const therapyId = target.dataset.id;
-            if (!therapyId) return;
-
+            const target = e.target; const therapyId = target.dataset.id; if (!therapyId) return;
             if (target.classList.contains('edit-therapy-btn')) {
-                if (confirm('Apakah anda yakin mengedit obat ini?')) {
-                    const docRef = doc(db, "drugTherapies", therapyId);
-                    const docSnap = await getDoc(docRef);
+                const hasPermission = await authenticateAdmin('mengedit obat');
+                if(hasPermission) {
+                    const docRef = doc(db, "drugTherapies", therapyId); const docSnap = await getDoc(docRef);
                     if (docSnap.exists()) {
                         const therapy = docSnap.data();
                         document.getElementById('edit-drug-id').value = therapyId;
@@ -965,70 +1588,164 @@
                     }
                 }
             }
-
             if (target.classList.contains('stop-therapy-btn')) {
-                if (confirm('Apakah anda yakin menghentikan pemberian obat ini??')) {
-                    const therapyRef = doc(db, "drugTherapies", therapyId);
-                    await updateDoc(therapyRef, {
-                        status: 'stopped'
-                    });
+                const hasPermission = await authenticateAdmin('menghentikan obat');
+                if (hasPermission && confirm('Apakah anda yakin menghentikan pemberian obat ini??')) {
+                    await updateDoc(doc(db, "drugTherapies", therapyId), { status: 'stopped' });
                 }
             }
-
             if (target.classList.contains('delete-therapy-btn')) {
-                if (confirm('Apakah anda yakin menghapus obat ini dari daftar?')) {
-                    try {
-                        await deleteDoc(doc(db, "drugTherapies", therapyId));
-                        alert('Obat berhasil dihapus.');
-                    } catch (error) {
-                        console.error("Error deleting drug therapy: ", error);
-                        alert('Gagal menghapus obat.');
-                    }
+                const hasPermission = await authenticateAdmin('menghapus obat');
+                if (hasPermission && confirm('Apakah anda yakin menghapus obat ini dari daftar?')) {
+                    try { await deleteDoc(doc(db, "drugTherapies", therapyId)); alert('Obat berhasil dihapus.'); }
+                    catch (error) { console.error("Error deleting drug therapy: ", error); alert('Gagal menghapus obat.'); }
                 }
             }
         });
 
         editDrugTherapyForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const therapyId = document.getElementById('edit-drug-id').value;
-            const therapyRef = doc(db, "drugTherapies", therapyId);
-            
+            e.preventDefault(); const therapyId = document.getElementById('edit-drug-id').value;
             try {
-                await updateDoc(therapyRef, {
-                    name: document.getElementById('edit-drug-name').value,
-                    dosage: document.getElementById('edit-drug-dosage').value,
-                    frequency: document.getElementById('edit-drug-frequency').value,
-                    route: document.getElementById('edit-drug-route').value
+                await updateDoc(doc(db, "drugTherapies", therapyId), {
+                    name: document.getElementById('edit-drug-name').value, dosage: document.getElementById('edit-drug-dosage').value,
+                    frequency: document.getElementById('edit-drug-frequency').value, route: document.getElementById('edit-drug-route').value
                 });
-                alert('Terapi obat berhasil diperbarui!');
-                editDrugModal.style.display = 'none';
-            } catch (error) {
-                console.error("Error updating drug therapy: ", error);
-                alert('Gagal memperbarui terapi obat.');
-            }
+                alert('Terapi obat berhasil diperbarui!'); editDrugModal.style.display = 'none';
+            } catch (error) { console.error("Error updating drug therapy: ", error); alert('Gagal memperbarui terapi obat.'); }
         });
 
-        closeDrugModalBtn.addEventListener('click', () => {
-            editDrugModal.style.display = 'none';
-        });
+        document.getElementById('close-drug-modal-btn').addEventListener('click', () => editDrugModal.style.display = 'none');
 
-        window.addEventListener('click', (e) => {
-            if (e.target == editPatientModal || e.target == editDrugModal) {
-                editPatientModal.style.display = 'none';
-                editDrugModal.style.display = 'none';
-            }
-        });
-
-
-        // --- Medical Records (Visits) with Photo Upload ---
         addMedicalRecordForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentPatientId) return;
+            e.preventDefault(); if (!currentPatientId) return;
+            const visitDate = document.getElementById('visit-date').value, visitTime = document.getElementById('visit-time').value;
+            const photoFile = document.getElementById('visit-photo').files[0]; let photoURL = '';
+            if (photoFile) {
+                if (photoFile.size > 1048576) { alert('Ukuran foto terlalu besar! Maksimal 1MB.'); return; }
+                photoURL = await toBase64(photoFile);
+            }
+            const recordData = {
+                patientId: currentPatientId, timestamp: new Date(`${visitDate}T${visitTime}`),
+                ttv: { blood_pressure: document.getElementById('blood-pressure').value, temperature: document.getElementById('temperature').value, pulse: document.getElementById('pulse').value, respiration: document.getElementById('respiration').value },
+                soap: { s: document.getElementById('soap-s').value, o: document.getElementById('soap-o').value, a: document.getElementById('soap-a').value, p: document.getElementById('soap-p').value },
+                medication_notes: document.getElementById('medication-notes').value,
+                visiting_nurse_name: visitingNurseInput.value,
+                photoURL: photoURL, createdAt: serverTimestamp()
+            };
+            try {
+                await addDoc(collection(db, "medicalRecords"), recordData);
+                alert('Catatan kunjungan berhasil disimpan!'); addMedicalRecordForm.reset();
+                document.getElementById('visit-date').valueAsDate = new Date();
+                document.getElementById('visit-time').value = new Date().toTimeString().slice(0, 5);
+            } catch (err) { console.error("Error adding record: ", err); alert('Gagal menyimpan catatan.'); }
+        });
 
-            const visitDate = document.getElementById('visit-date').value;
-            const visitTime = document.getElementById('visit-time').value;
-            const photoFile = document.getElementById('visit-photo').files[0];
-            
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error);
+        });
+
+        const displayMedicalRecords = (patientId) => {
+            const q = query(collection(db, "medicalRecords"), where("patientId", "==", patientId));
+            onSnapshot(q, (snapshot) => {
+                medicalRecordList.innerHTML = '';
+                if (snapshot.empty) { medicalRecordList.innerHTML = '<li>Belum ada riwayat kunjungan.</li>'; return; }
+                const records = snapshot.docs.map(doc => doc.data());
+                records.sort((a, b) => (b.timestamp.toDate() || 0) - (a.timestamp.toDate() || 0));
+                records.forEach((record) => {
+                    const visitDate = record.timestamp.toDate(); const li = document.createElement('li');
+                    li.innerHTML = `
+                        <div class="record-header">Kunjungan: ${visitDate.toLocaleDateString('id-ID', { dateStyle: 'full' })} - ${visitDate.toLocaleTimeString('id-ID', { timeStyle: 'short' })}</div>
+                        <div class="record-body">
+                            <p><strong>TTV:</strong> TD: ${record.ttv.blood_pressure || '-'}, S: ${record.ttv.temperature || '-'}°C, N: ${record.ttv.pulse || '-'}x/m, RR: ${record.ttv.respiration || '-'}x/m</p>
+                            <p><strong>S:</strong> ${record.soap.s}</p><p><strong>O:</strong> ${record.soap.o}</p><p><strong>A:</strong> ${record.soap.a}</p><p><strong>P:</strong> ${record.soap.p}</p>
+                            ${record.medication_notes ? `<p><strong>Catatan Obat:</strong> ${record.medication_notes}</p>` : ''}
+                            ${record.visiting_nurse_name ? `<p><strong>Perawat:</strong> ${record.visiting_nurse_name}</p>` : ''}
+                            ${record.photoURL ? `<img src="${record.photoURL}" alt="Dokumentasi Kunjungan" class="record-photo">` : ''}
+                        </div>`;
+                    medicalRecordList.appendChild(li);
+                });
+            }, (error) => console.error("Error in medicalRecords snapshot listener: ", error));
+        };
+
+        const doughnutText = {
+            id: 'doughnutText',
+            afterDraw(chart, args, options) {
+                const { ctx, data } = chart; const text = data.datasets[0].data[0]; if (text === undefined) return;
+                ctx.save(); const x = chart.getDatasetMeta(0).data[0].x, y = chart.getDatasetMeta(0).data[0].y;
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = 'bold 30px sans-serif';
+                ctx.fillStyle = '#007bff'; ctx.fillText(text, x, y); ctx.restore();
+            }
+        };
+
+        const updateDashboardCharts = (patientsData) => {
+            if (totalPatientsChartInstance) totalPatientsChartInstance.destroy();
+            if (genderChartInstance) genderChartInstance.destroy();
+            const totalCtx = document.getElementById('total-patients-chart').getContext('2d');
+            totalPatientsChartInstance = new Chart(totalCtx, {
+                type: 'doughnut', data: { labels: ['Total Pasien'], datasets: [{ data: [patientsData.length], backgroundColor: ['#007bff'], hoverBackgroundColor: ['#0056b3'], borderColor: ['#ffffff'], borderWidth: 2 }] },
+                options: { responsive: true, plugins: { legend: { display: false }, tooltip: { enabled: false } }, cutout: '70%' }, plugins: [doughnutText]
+            });
+            const genderCounts = { 'Laki-laki': 0, 'Perempuan': 0, 'Lainnya': 0 };
+            patientsData.forEach(patient => {
+                if (patient.gender === 'Laki-laki') genderCounts['Laki-laki']++;
+                else if (patient.gender === 'Perempuan') genderCounts['Perempuan']++;
+                else genderCounts['Lainnya']++;
+            });
+            const genderCtx = document.getElementById('gender-chart').getContext('2d');
+            genderChartInstance = new Chart(genderCtx, {
+                type: 'pie', data: { labels: ['Laki-laki', 'Perempuan', 'Belum Diisi'], datasets: [{ data: [genderCounts['Laki-laki'], genderCounts['Perempuan'], genderCounts['Lainnya']], backgroundColor: ['#007bff', '#e83e8c', '#6c757d'], borderColor: ['#ffffff', '#ffffff', '#ffffff'], borderWidth: 2 }] },
+                options: { responsive: true, plugins: { legend: { position: 'top' } } }
+            });
+        };
+
+        const generateNurseId = () => {
+            const now = new Date();
+            const year = now.getFullYear().toString();
+            const month = ('0' + (now.getMonth() + 1)).slice(-2);
+            const day = ('0' + now.getDate()).slice(-2);
+            const suffix = Date.now().toString().slice(-6);
+            return `NRS-${year}${month}${day}-${suffix}`;
+        };
+
+        showAddNurseBtn.addEventListener('click', async () => {
+            const hasPermission = await authenticateAdmin('menambah perawat baru');
+            if (hasPermission) {
+                addNurseCard.style.display = 'block';
+                showAddNurseBtn.style.display = 'none';
+                addNurseForm.reset();
+                addNurseError.style.display = 'none';
+                nurseIdInput.value = generateNurseId();
+            }
+        });
+
+        cancelAddNurseBtn.addEventListener('click', () => {
+            addNurseCard.style.display = 'none';
+            showAddNurseBtn.style.display = 'block';
+            addNurseForm.reset();
+            addNurseError.style.display = 'none';
+        });
+
+        addNurseForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            addNurseError.style.display = 'none';
+            const nurseIdValue = document.getElementById('nurse-id').value;
+            const newNurseUsername = newNurseUsernameInput.value;
+            const newNursePassword = newNursePasswordInput.value;
+            const qExistId = query(collection(db, "nurses"), where("nurseId", "==", nurseIdValue));
+            const qExistUsername = query(collection(db, "nurses"), where("username", "==", newNurseUsername));
+            const [existingIdDocs, existingUsernameDocs] = await Promise.all([getDocs(qExistId), getDocs(qExistUsername)]);
+            if (!existingIdDocs.empty) {
+                addNurseError.textContent = 'ID Perawat ini sudah terdaftar.';
+                addNurseError.style.display = 'block';
+                return;
+            }
+            if (!existingUsernameDocs.empty) {
+                addNurseError.textContent = 'Username ini sudah digunakan.';
+                addNurseError.style.display = 'block';
+                return;
+            }
+            const photoFile = document.getElementById('nurse-photo').files[0];
             let photoURL = '';
             if (photoFile) {
                 if (photoFile.size > 1048576) {
@@ -1037,381 +1754,659 @@
                 }
                 photoURL = await toBase64(photoFile);
             }
-
-            const recordData = {
-                patientId: currentPatientId,
-                timestamp: new Date(`${visitDate}T${visitTime}`),
-                ttv: { blood_pressure: document.getElementById('blood-pressure').value, temperature: document.getElementById('temperature').value, pulse: document.getElementById('pulse').value, respiration: document.getElementById('respiration').value },
-                soap: { s: document.getElementById('soap-s').value, o: document.getElementById('soap-o').value, a: document.getElementById('soap-a').value, p: document.getElementById('soap-p').value },
-                medication_notes: document.getElementById('medication-notes').value,
-                visiting_nurse_name: document.getElementById('visiting-nurse-name').value,
-                photoURL: photoURL,
-                createdAt: serverTimestamp()
-            };
-
-            try {
-                await addDoc(collection(db, "medicalRecords"), recordData);
-                alert('Catatan kunjungan berhasil disimpan!');
-                addMedicalRecordForm.reset();
-                document.getElementById('visit-date').valueAsDate = new Date();
-                document.getElementById('visit-time').value = new Date().toTimeString().slice(0, 5);
-            } catch (err) {
-                console.error("Error adding record: ", err);
-                alert('Gagal menyimpan catatan.');
-            }
-        });
-
-        const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-
-        const displayMedicalRecords = (patientId) => {
-            const q = query(collection(db, "medicalRecords"), where("patientId", "==", patientId));
-            onSnapshot(q, (snapshot) => {
-                medicalRecordList.innerHTML = '';
-                if (snapshot.empty) { 
-                    medicalRecordList.innerHTML = '<li>Belum ada riwayat kunjungan.</li>'; 
-                    return; 
-                }
-
-                const records = snapshot.docs.sort((a, b) => {
-                    const timeA = a.data().timestamp.toDate();
-                    const timeB = b.data().timestamp.toDate();
-                    return timeB - timeA;
-                });
-
-                records.forEach((doc) => {
-                    const record = doc.data();
-                    const visitDate = record.timestamp.toDate();
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <div class="record-header">Kunjungan: ${visitDate.toLocaleDateString('id-ID', { dateStyle: 'full' })} - ${visitDate.toLocaleTimeString('id-ID', { timeStyle: 'short' })}</div>
-                        <div class="record-body">
-                            <p><strong>TTV:</strong> TD: ${record.ttv.blood_pressure || '-'}, S: ${record.ttv.temperature || '-'}°C, N: ${record.ttv.pulse || '-'}x/m, RR: ${record.ttv.respiration || '-'}x/m</p>
-                            <p><strong>S:</strong> ${record.soap.s}</p><p><strong>O:</strong> ${record.soap.o}</p><p><strong>A:</strong> ${record.soap.a}</p><p><strong>P:</strong> ${record.soap.p}</p>
-                            ${record.medication_notes ? `<p><strong>Catatan Obat:</strong> ${record.medication_notes}</p>` : ''}
-                            ${record.visiting_nurse_name ? `<p><strong>Perawat:</strong> ${record.visiting_nurse_name}</p>` : ''} 
-                            ${record.photoURL ? `<img src="${record.photoURL}" alt="Dokumentasi Kunjungan" class="record-photo">` : ''}
-                        </div>`;
-                    medicalRecordList.appendChild(li);
-                });
-            }, (error) => {
-                console.error("Error in medicalRecords snapshot listener: ", error);
-            });
-        };
-
-        // --- Dashboard Charts ---
-        const doughnutText = {
-            id: 'doughnutText',
-            afterDraw(chart, args, options) {
-                const { ctx, data } = chart;
-                const text = data.datasets[0].data[0];
-                if (text === undefined) return;
-
-                ctx.save();
-                const x = chart.getDatasetMeta(0).data[0].x;
-                const y = chart.getDatasetMeta(0).data[0].y;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = 'bold 30px sans-serif';
-                ctx.fillStyle = '#007bff';
-                ctx.fillText(text, x, y);
-                ctx.restore();
-            }
-        };
-
-        const updateDashboardCharts = (patientsData) => {
-            if (totalPatientsChartInstance) {
-                totalPatientsChartInstance.destroy();
-            }
-            if (genderChartInstance) {
-                genderChartInstance.destroy();
-            }
-
-            const totalCtx = document.getElementById('total-patients-chart').getContext('2d');
-            totalPatientsChartInstance = new Chart(totalCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Total Pasien'],
-                    datasets: [{
-                        data: [patientsData.length],
-                        backgroundColor: ['#007bff'],
-                        hoverBackgroundColor: ['#0056b3'],
-                        borderColor: ['#ffffff'],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                    },
-                    cutout: '70%'
-                },
-                plugins: [doughnutText]
-            });
-
-            const genderCounts = { 'Laki-laki': 0, 'Perempuan': 0, 'Lainnya': 0 };
-            patientsData.forEach(patient => {
-                if (patient.gender === 'Laki-laki') {
-                    genderCounts['Laki-laki']++;
-                } else if (patient.gender === 'Perempuan') {
-                    genderCounts['Perempuan']++;
-                } else {
-                    genderCounts['Lainnya']++;
-                }
-            });
-
-            const genderCtx = document.getElementById('gender-chart').getContext('2d');
-            genderChartInstance = new Chart(genderCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Laki-laki', 'Perempuan', 'Belum Diisi'],
-                    datasets: [{
-                        data: [genderCounts['Laki-laki'], genderCounts['Perempuan'], genderCounts['Lainnya']],
-                        backgroundColor: ['#007bff', '#e83e8c', '#6c757d'],
-                        borderColor: ['#ffffff', '#ffffff', '#ffffff'],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                    }
-                }
-            });
-        };
-
-        // --- NEW: Nurse Data Management ---
-        const authenticateAdmin = (action) => {
-            if (!confirm(`Apakah anda memiliki ijin untuk ${action} data ini?`)) {
-                return false;
-            }
-            const username = prompt("Masukkan username:");
-            if (username !== "Aponk") {
-                alert("Username salah.");
-                return false;
-            }
-            const password = prompt("Masukkan password:");
-            if (password !== "2025") {
-                alert("Password salah.");
-                return false;
-            }
-            return true;
-        };
-
-        showAddNurseBtn.addEventListener('click', () => {
-            addNurseCard.style.display = 'block';
-            showAddNurseBtn.style.display = 'none';
-        });
-
-        cancelAddNurseBtn.addEventListener('click', () => {
-            addNurseCard.style.display = 'none';
-            showAddNurseBtn.style.display = 'block';
-            addNurseForm.reset();
-        });
-
-        addNurseForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const photoFile = document.getElementById('nurse-photo').files[0];
-            let photoURL = '';
-            if (photoFile) {
-                if (photoFile.size > 1048576) { // 1MB check
-                    alert('Ukuran foto terlalu besar! Maksimal 1MB.');
-                    return;
-                }
-                photoURL = await toBase64(photoFile);
-            }
-
             try {
                 await addDoc(collection(db, "nurses"), {
                     name: document.getElementById('nurse-name').value,
                     dob: document.getElementById('nurse-dob').value,
-                    nurseId: document.getElementById('nurse-id').value,
+                    nurseId: nurseIdValue,
                     regNumber: document.getElementById('nurse-reg-number').value,
                     visitArea: document.getElementById('nurse-visit-area').value,
                     photoURL: photoURL,
+                    username: newNurseUsername,
+                    password: newNursePassword,
                     createdAt: serverTimestamp()
                 });
-                alert('Data perawat berhasil ditambahkan!');
+                alert('Data perawat dan akun login berhasil ditambahkan!');
                 addNurseForm.reset();
                 addNurseCard.style.display = 'none';
                 showAddNurseBtn.style.display = 'block';
             } catch (error) {
                 console.error("Error adding nurse: ", error);
-                alert('Gagal menambahkan data perawat.');
+                addNurseError.textContent = 'Gagal menambahkan data perawat.';
+                addNurseError.style.display = 'block';
             }
         });
 
         const renderNurseList = () => {
-            nurseList.innerHTML = '';
-            const searchTerm = searchNurseInput.value.toLowerCase();
-            const filteredNurses = allNurses.filter(nurseDoc => {
-                const nurse = nurseDoc.data();
-                return nurse.name && nurse.name.toLowerCase().includes(searchTerm);
-            });
-
-            if (filteredNurses.length === 0) {
-                nurseList.innerHTML = '<li>Belum ada data perawat.</li>';
-                return;
-            }
-
+            nurseList.innerHTML = ''; const searchTerm = searchNurseInput.value.toLowerCase();
+            const filteredNurses = allNurses.filter(nurseDoc => nurseDoc.data().name?.toLowerCase().includes(searchTerm));
+            if (filteredNurses.length === 0) { nurseList.innerHTML = '<li>Belum ada data perawat.</li>'; return; }
             filteredNurses.forEach((doc) => {
-                const nurse = doc.data();
-                const li = document.createElement('li');
+                const nurse = doc.data(); const li = document.createElement('li');
                 li.innerHTML = `
-                    <div class="list-item-info">
-                        <strong>${nurse.name}</strong><br>
-                        <small>ID: ${nurse.nurseId}</small>
-                    </div>
-                    <div class="list-item-actions">
-                        <button class="btn btn-primary view-nurse-detail-btn" data-id="${doc.id}" style="padding: 4px 8px; font-size: 12px;">Detail</button>
-                        <button class="btn btn-warning edit-nurse-btn" data-id="${doc.id}" style="padding: 4px 8px; font-size: 12px;">Edit</button>
-                        <button class="btn btn-danger delete-nurse-btn" data-id="${doc.id}" style="padding: 4px 8px; font-size: 12px;">Hapus</button>
-                    </div>`;
+                    <div class="list-item-info"><strong>${nurse.name}</strong><br><small>ID: ${nurse.nurseId}</small></div>
+                    <div class="list-item-actions"><button class="btn btn-primary view-nurse-detail-btn" data-id="${doc.id}" style="padding: 4px 8px; font-size: 12px;">Detail</button></div>`;
                 nurseList.appendChild(li);
             });
         };
-
         searchNurseInput.addEventListener('input', renderNurseList);
-
         const listenForNurses = () => {
             const q = query(collection(db, "nurses"), orderBy("name"));
-            onSnapshot(q, (snapshot) => {
-                allNurses = snapshot.docs;
-                renderNurseList();
-            });
+            onSnapshot(q, (snapshot) => { allNurses = snapshot.docs; renderNurseList(); });
         };
-
         const displayNurseDetails = async (nurseId) => {
-            const docRef = doc(db, "nurses", nurseId);
-            const docSnap = await getDoc(docRef);
+            const docRef = doc(db, "nurses", nurseId); const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
                 const nurse = docSnap.data();
                 document.getElementById('nurse-detail-name').textContent = `Detail Perawat: ${nurse.name}`;
-                
-                const infoContainer = document.getElementById('nurse-info-display');
-                infoContainer.innerHTML = `
+                nurseInfoDisplay.innerHTML = `
                     <p><strong>Nama:</strong> ${nurse.name}</p>
                     <p><strong>Tanggal Lahir:</strong> ${nurse.dob}</p>
                     <p><strong>ID Perawat:</strong> ${nurse.nurseId}</p>
                     <p><strong>Nomor Registrasi:</strong> ${nurse.regNumber}</p>
                     <p><strong>Wilayah Kunjungan:</strong><br>${(nurse.visitArea || '-').replace(/\n/g, '<br>')}</p>
+                    <p><strong>Username Akun:</strong> ${nurse.username || 'Belum Terdaftar'}</p>
                 `;
-
-                const photoContainer = document.getElementById('nurse-photo-container');
                 const photoEl = document.getElementById('nurse-detail-photo');
-                if (nurse.photoURL) {
-                    photoEl.src = nurse.photoURL;
-                    photoContainer.style.display = 'block';
-                } else {
-                    photoContainer.style.display = 'none';
-                }
-
-                nurseListView.style.display = 'none';
-                nurseDetailView.style.display = 'block';
+                if (nurse.photoURL) { photoEl.src = nurse.photoURL; photoEl.parentElement.style.display = 'block'; }
+                else { photoEl.parentElement.style.display = 'none'; }
+                nurseListView.style.display = 'none'; nurseDetailView.style.display = 'block';
             }
         };
+        nurseList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('view-nurse-detail-btn')) { currentNurseId = e.target.dataset.id; displayNurseDetails(currentNurseId); }
+        });
 
-        nurseList.addEventListener('click', async (e) => {
+        document.getElementById('nurse-detail-view').addEventListener('click', async (e) => {
             const target = e.target;
-            const nurseId = target.dataset.id;
-            if (!nurseId) return;
-
-            if (target.classList.contains('view-nurse-detail-btn')) {
-                displayNurseDetails(nurseId);
-            }
-
-            if (target.classList.contains('edit-nurse-btn')) {
-                if (authenticateAdmin('mengedit')) {
-                    const docRef = doc(db, "nurses", nurseId);
+            if (!currentNurseId) return;
+            if (target.id === 'edit-nurse-detail-btn') {
+                const hasPermission = await authenticateAdmin('mengedit');
+                if (hasPermission) {
+                    const docRef = doc(db, "nurses", currentNurseId);
                     const docSnap = await getDoc(docRef);
                     if (docSnap.exists()) {
                         const nurse = docSnap.data();
-                        document.getElementById('edit-nurse-id').value = nurseId;
+                        document.getElementById('edit-nurse-id').value = currentNurseId;
                         document.getElementById('edit-nurse-name').value = nurse.name;
                         document.getElementById('edit-nurse-dob').value = nurse.dob;
                         document.getElementById('edit-nurse-id-field').value = nurse.nurseId;
                         document.getElementById('edit-nurse-reg-number').value = nurse.regNumber;
                         document.getElementById('edit-nurse-visit-area').value = nurse.visitArea;
+                        editNurseUsernameInput.value = nurse.username || '';
+                        editNursePasswordInput.value = '';
+                        editNurseError.style.display = 'none';
                         editNurseModal.style.display = 'block';
                     }
                 }
             }
-
-            if (target.classList.contains('delete-nurse-btn')) {
-                if (authenticateAdmin('menghapus')) {
+            if (target.id === 'delete-nurse-detail-btn') {
+                const hasPermission = await authenticateAdmin('menghapus');
+                if (hasPermission) {
                     try {
-                        await deleteDoc(doc(db, "nurses", nurseId));
-                        alert('Data perawat berhasil dihapus.');
-                    } catch (error) {
-                        console.error("Error deleting nurse: ", error);
-                        alert('Gagal menghapus data perawat.');
-                    }
+                        await deleteDoc(doc(db, "nurses", currentNurseId));
+                        alert('Data perawat berhasil dihapus.'); backToNursesBtn.click();
+                    } catch (error) { console.error("Error deleting nurse: ", error); alert('Gagal menghapus data perawat.'); }
                 }
             }
         });
-        
+
         editNurseForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const nurseId = document.getElementById('edit-nurse-id').value;
-            const nurseRef = doc(db, "nurses", nurseId);
-
-            const photoFile = document.getElementById('edit-nurse-photo').files[0];
+            editNurseError.style.display = 'none';
+            const nurseDocId = document.getElementById('edit-nurse-id').value;
+            const nurseRef = doc(db, "nurses", nurseDocId);
+            const editedNurseIdValue = document.getElementById('edit-nurse-id-field').value;
+            const editedNurseUsernameValue = editNurseUsernameInput.value;
+            const currentNurseSnap = await getDoc(nurseRef);
+            let currentNurseData = {};
+            if (currentNurseSnap.exists()) {
+                currentNurseData = currentNurseSnap.data();
+            }
+            const qExistIdEdit = query(collection(db, "nurses"), where("nurseId", "==", editedNurseIdValue));
+            const existingIdDocsEdit = await getDocs(qExistIdEdit);
+            if (!existingIdDocsEdit.empty && existingIdDocsEdit.docs[0].id !== nurseDocId) {
+                editNurseError.textContent = 'ID Perawat ini sudah terdaftar untuk perawat lain.';
+                editNurseError.style.display = 'block';
+                return;
+            }
+            const qExistUsernameEdit = query(collection(db, "nurses"), where("username", "==", editedNurseUsernameValue));
+            const existingUsernameDocsEdit = await getDocs(qExistUsernameEdit);
+            if (!existingUsernameDocsEdit.empty && existingUsernameDocsEdit.docs[0].id !== nurseDocId) {
+                editNurseError.textContent = 'Username ini sudah digunakan oleh perawat lain.';
+                editNurseError.style.display = 'block';
+                return;
+            }
+            const photoFile = editNursePhotoInput.files[0];
             let photoURL;
-
             if (photoFile) {
-                 if (photoFile.size > 1048576) {
-                    alert('Ukuran foto terlalu besar! Maksimal 1MB.');
-                    return;
-                }
+                if (photoFile.size > 1048576) { alert('Ukuran foto terlalu besar! Maksimal 1MB.'); return; }
                 photoURL = await toBase64(photoFile);
             }
-
-            const dataToUpdate = {
+            const dataToUpdateFirestore = {
                 name: document.getElementById('edit-nurse-name').value,
                 dob: document.getElementById('edit-nurse-dob').value,
                 nurseId: document.getElementById('edit-nurse-id-field').value,
                 regNumber: document.getElementById('edit-nurse-reg-number').value,
                 visitArea: document.getElementById('edit-nurse-visit-area').value,
+                username: editNurseUsernameInput.value,
             };
-
             if (photoURL) {
-                dataToUpdate.photoURL = photoURL;
+                dataToUpdateFirestore.photoURL = photoURL;
+            } else if (currentNurseData.photoURL) {
+                dataToUpdateFirestore.photoURL = currentNurseData.photoURL;
+            } else {
+                dataToUpdateFirestore.photoURL = '';
             }
-
+            const newPassword = editNursePasswordInput.value;
+            if (newPassword) {
+                dataToUpdateFirestore.password = newPassword;
+            } else {
+                dataToUpdateFirestore.password = currentNurseData.password;
+            }
             try {
-                await updateDoc(nurseRef, dataToUpdate);
+                await updateDoc(nurseRef, dataToUpdateFirestore);
                 alert('Data perawat berhasil diperbarui!');
                 editNurseModal.style.display = 'none';
+                displayNurseDetails(nurseDocId);
+                if (loggedInNurseId === nurseDocId) {
+                    loggedInNurseName = dataToUpdateFirestore.name;
+                    loggedInNursePhoto = dataToUpdateFirestore.photoURL || '';
+                    updateLoggedInUserInfo(loggedInNurseName, loggedInNursePhoto);
+                }
             } catch (error) {
                 console.error("Error updating nurse data: ", error);
-                alert('Gagal memperbarui data perawat.');
+                editNurseError.textContent = 'Gagal memperbarui data perawat.';
+                editNurseError.style.display = 'block';
             }
         });
 
-        closeNurseModalBtn.addEventListener('click', () => {
+        document.getElementById('close-nurse-modal-btn').addEventListener('click', () => {
             editNurseModal.style.display = 'none';
-        });
-        
-        backToNursesBtn.addEventListener('click', () => {
-            nurseListView.style.display = 'block';
-            nurseDetailView.style.display = 'none';
+            editNurseForm.reset();
+            editNurseError.style.display = 'none';
         });
 
+        cancelEditNurseBtn.addEventListener('click', () => {
+            editNurseModal.style.display = 'none';
+            editNurseForm.reset();
+            editNurseError.style.display = 'none';
+        });
 
-        // --- Initial Load ---
-        setInitialMedicalRecordNumber();
-        listenForPatients();
-        listenForNurses(); // Listen for nurse data
-        handleNavigation('patients'); // Set initial view
+        backToNursesBtn.addEventListener('click', () => { nurseListView.style.display = 'block'; nurseDetailView.style.display = 'none'; currentNurseId = null; });
+
+        const setupNurseAutocomplete = (inputElement, suggestionsElement) => {
+            inputElement.addEventListener('input', () => {
+                const searchTerm = inputElement.value.toLowerCase();
+                if (!searchTerm) {
+                    suggestionsElement.style.display = 'none';
+                    return;
+                }
+                const filteredNurses = allNurses.filter(doc => {
+                    const nurse = doc.data();
+                    return nurse.name.toLowerCase().includes(searchTerm);
+                });
+                suggestionsElement.innerHTML = '';
+                if (filteredNurses.length > 0) {
+                    filteredNurses.forEach(doc => {
+                        const nurse = doc.data();
+                        const item = document.createElement('div');
+                        item.classList.add('suggestion-item');
+                        item.textContent = nurse.name;
+                        item.addEventListener('click', () => {
+                            inputElement.value = nurse.name;
+                            suggestionsElement.style.display = 'none';
+                        });
+                        suggestionsElement.appendChild(item);
+                    });
+                    suggestionsElement.style.display = 'block';
+                } else {
+                    suggestionsElement.style.display = 'none';
+                }
+            });
+            inputElement.addEventListener('blur', () => {
+                setTimeout(() => {
+                    suggestionsElement.style.display = 'none';
+                }, 200);
+            });
+        };
+
+        setupNurseAutocomplete(assessingNurseInput, assessingNurseSuggestions);
+        setupNurseAutocomplete(visitingNurseInput, visitingNurseSuggestions);
+        setupNurseAutocomplete(editAssessingNurseInput, editAssessingNurseSuggestions);
+
+        const calculateTotalAmount = () => {
+            const actionCost = parseFloat(priceActionCostInput.value) || 0;
+            const bhpCost = parseFloat(priceBhpCostInput.value) || 0;
+            const medicineCost = parseFloat(priceMedicineCostInput.value) || 0;
+            const travelCost = parseFloat(priceTravelCostInput.value) || 0;
+            let customCostsTotal = 0;
+            document.querySelectorAll('.custom-cost-input').forEach(input => {
+                customCostsTotal += parseFloat(input.value) || 0;
+            });
+            const total = actionCost + bhpCost + medicineCost + travelCost + customCostsTotal;
+            priceAmountInput.value = total;
+        };
+
+        priceActionCostInput.addEventListener('input', calculateTotalAmount);
+        priceBhpCostInput.addEventListener('input', calculateTotalAmount);
+        priceMedicineCostInput.addEventListener('input', calculateTotalAmount);
+        priceTravelCostInput.addEventListener('input', calculateTotalAmount);
+
+        const addCustomCostField = (name = '', amount = '') => {
+            const div = document.createElement('div');
+            div.classList.add('custom-cost-item');
+            div.style.marginBottom = '15px';
+            const nameLabel = document.createElement('label');
+            nameLabel.textContent = 'Nama Biaya Lainnya:';
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.classList.add('custom-cost-name');
+            nameInput.placeholder = 'Contoh: Biaya Administrasi';
+            nameInput.value = name;
+            const amountLabel = document.createElement('label');
+            amountLabel.textContent = 'Jumlah Biaya (Rp):';
+            const amountInput = document.createElement('input');
+            amountInput.type = 'number';
+            amountInput.classList.add('custom-cost-input');
+            amountInput.placeholder = '0';
+            amountInput.value = amount;
+            amountInput.addEventListener('input', calculateTotalAmount);
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Hapus';
+            removeButton.classList.add('btn', 'btn-danger');
+            removeButton.style.width = 'auto';
+            removeButton.style.padding = '5px 10px';
+            removeButton.style.fontSize = '14px';
+            removeButton.style.marginTop = '5px';
+            removeButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                div.remove();
+                calculateTotalAmount();
+            });
+            div.appendChild(nameLabel);
+            div.appendChild(nameInput);
+            div.appendChild(amountLabel);
+            div.appendChild(amountInput);
+            div.appendChild(removeButton);
+            customCostsContainer.appendChild(div);
+        };
+
+        addCustomCostBtn.addEventListener('click', () => {
+            addCustomCostField();
+        });
+
+        servicesList.addEventListener('click', (e) => {
+            if (e.target.tagName === 'LI') {
+                currentServiceId = e.target.dataset.serviceId;
+                priceModalTitle.textContent = `Daftar Harga: ${e.target.textContent}`;
+                priceForm.reset();
+                document.getElementById('price-id').value = '';
+                addEditPriceTitle.textContent = 'Tambah Harga Baru';
+                priceActionCostInput.value = '';
+                priceBhpCostInput.value = '';
+                priceMedicineCostInput.value = '';
+                priceTravelCostInput.value = '';
+                priceAmountInput.value = '';
+                customCostsContainer.innerHTML = '';
+                addEditPriceCard.style.display = 'none';
+                showAddPriceFormBtn.textContent = 'Tambah Harga Baru';
+                displayPrices(currentServiceId);
+                servicePriceModal.style.display = 'block';
+            }
+        });
+
+        showAddPriceFormBtn.addEventListener('click', () => {
+            if (addEditPriceCard.style.display === 'none') {
+                addEditPriceCard.style.display = 'block';
+                showAddPriceFormBtn.textContent = 'Sembunyikan Form';
+                priceForm.reset();
+                document.getElementById('price-id').value = '';
+                addEditPriceTitle.textContent = 'Tambah Harga Baru';
+                priceActionCostInput.value = '';
+                priceBhpCostInput.value = '';
+                priceMedicineCostInput.value = '';
+                priceTravelCostInput.value = '';
+                customCostsContainer.innerHTML = '';
+                calculateTotalAmount();
+            } else {
+                addEditPriceCard.style.display = 'none';
+                showAddPriceFormBtn.textContent = 'Tambah Harga Baru';
+            }
+        });
+
+        const displayPrices = (serviceId) => {
+            const q = query(collection(db, "servicePrices"), where("serviceId", "==", serviceId));
+            onSnapshot(q, (snapshot) => {
+                priceList.innerHTML = '';
+                if (snapshot.empty) {
+                    priceList.innerHTML = '<li>Belum ada daftar harga untuk layanan ini.</li>';
+                    return;
+                }
+                const prices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                prices.sort((a, b) => (a.createdAt?.toDate() || 0) - (b.createdAt?.toDate() || 0));
+                prices.forEach(price => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <div class="list-item-info">
+                            <strong>${price.description}</strong><br>
+                            <small>Rp ${new Intl.NumberFormat('id-ID').format(price.amount)}</small>
+                        </div>
+                        <div class="list-item-actions">
+                            <button class="btn btn-info-green view-price-details-btn" data-id="${price.id}" style="padding: 4px 8px; font-size: 12px;">Rincian</button>
+                            <button class="btn btn-warning edit-price-btn" data-id="${price.id}" style="padding: 4px 8px; font-size: 12px;">Edit</button>
+                            <button class="btn btn-danger delete-price-btn" data-id="${price.id}" style="padding: 4px 8px; font-size: 12px;">Hapus</button>
+                        </div>
+                    `;
+                    priceList.appendChild(li);
+                });
+            });
+        };
+
+        priceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const priceId = document.getElementById('price-id').value;
+            const customCosts = [];
+            customCostsContainer.querySelectorAll('.custom-cost-item').forEach(item => {
+                const nameInput = item.querySelector('.custom-cost-name');
+                const amountInput = item.querySelector('.custom-cost-input');
+                if (nameInput && amountInput && nameInput.value.trim() !== '') {
+                    customCosts.push({
+                        name: nameInput.value.trim(),
+                        amount: parseFloat(amountInput.value) || 0
+                    });
+                }
+            });
+            const priceData = {
+                serviceId: currentServiceId,
+                description: document.getElementById('price-description').value,
+                amount: Number(priceAmountInput.value),
+                actionCost: Number(priceActionCostInput.value) || 0,
+                bhpCost: Number(priceBhpCostInput.value) || 0,
+                medicineCost: Number(priceMedicineCostInput.value) || 0,
+                travelCost: Number(priceTravelCostInput.value) || 0,
+                customCosts: customCosts
+            };
+            try {
+                if (priceId) {
+                    await updateDoc(doc(db, "servicePrices", priceId), priceData);
+                    alert('Harga berhasil diperbarui!');
+                } else {
+                    priceData.createdAt = serverTimestamp();
+                    await addDoc(collection(db, "servicePrices"), priceData);
+                    alert('Harga berhasil ditambahkan!');
+                }
+                priceForm.reset();
+                document.getElementById('price-id').value = '';
+                addEditPriceTitle.textContent = 'Tambah Harga Baru';
+                priceActionCostInput.value = '';
+                priceBhpCostInput.value = '';
+                priceMedicineCostInput.value = '';
+                priceTravelCostInput.value = '';
+                priceAmountInput.value = '';
+                customCostsContainer.innerHTML = '';
+                addEditPriceCard.style.display = 'none';
+                showAddPriceFormBtn.textContent = 'Tambah Harga Baru';
+            } catch (error) {
+                console.error("Error saving price: ", error);
+                alert('Gagal menyimpan harga.');
+            }
+        });
+
+        priceList.addEventListener('click', async (e) => {
+            const target = e.target;
+            const priceId = target.dataset.id;
+            if (!priceId) return;
+            if (target.classList.contains('view-price-details-btn')) {
+                const docRef = doc(db, "servicePrices", priceId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const price = docSnap.data();
+                    priceDetailsModal.dataset.priceId = priceId;
+                    currentInvoicePriceData = price;
+                    document.getElementById('price-details-title').textContent = `Rincian Harga: ${price.description}`;
+                    detailPriceDescription.textContent = price.description;
+                    detailPriceAmount.textContent = new Intl.NumberFormat('id-ID').format(price.amount);
+                    detailPriceActionCost.textContent = new Intl.NumberFormat('id-ID').format(price.actionCost || 0);
+                    detailPriceBhpCost.textContent = new Intl.NumberFormat('id-ID').format(price.bhpCost || 0);
+                    detailPriceMedicineCost.textContent = new Intl.NumberFormat('id-ID').format(price.medicineCost || 0);
+                    detailPriceTravelCost.textContent = new Intl.NumberFormat('id-ID').format(price.travelCost || 0);
+                    detailCustomCostsContainer.innerHTML = '';
+                    if (price.customCosts && price.customCosts.length > 0) {
+                        price.customCosts.forEach(customCost => {
+                            const p = document.createElement('p');
+                            p.classList.add('price-detail-item');
+                            p.innerHTML = `<strong>${customCost.name}:</strong> Rp ${new Intl.NumberFormat('id-ID').format(customCost.amount || 0)}`;
+                            detailCustomCostsContainer.appendChild(p);
+                        });
+                    }
+                    priceDetailsModal.style.display = 'block';
+                }
+                return;
+            }
+            if (target.classList.contains('delete-price-btn')) {
+                const hasPermission = await authenticateAdmin('menghapus harga');
+                if (hasPermission && confirm('Yakin ingin menghapus harga ini?')) {
+                    try {
+                        await deleteDoc(doc(db, "servicePrices", priceId));
+                        alert('Harga berhasil dihapus.');
+                    } catch (error) {
+                        console.error("Error deleting price: ", error);
+                        alert('Gagal menghapus harga.');
+                    }
+                }
+            }
+            if (target.classList.contains('edit-price-btn')) {
+                const hasPermission = await authenticateAdmin('mengedit harga');
+                if(hasPermission){
+                    const docRef = doc(db, "servicePrices", priceId);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const price = docSnap.data();
+                        document.getElementById('price-id').value = priceId;
+                        document.getElementById('price-description').value = price.description;
+                        priceActionCostInput.value = price.actionCost || 0;
+                        priceBhpCostInput.value = price.bhpCost || 0;
+                        priceMedicineCostInput.value = price.medicineCost || 0;
+                        priceTravelCostInput.value = price.travelCost || 0;
+                        customCostsContainer.innerHTML = '';
+                        if (price.customCosts && price.customCosts.length > 0) {
+                            price.customCosts.forEach(customCost => {
+                                addCustomCostField(customCost.name, customCost.amount);
+                            });
+                        }
+                        calculateTotalAmount();
+                        addEditPriceTitle.textContent = 'Edit Harga';
+                        addEditPriceCard.style.display = 'block';
+                        showAddPriceFormBtn.textContent = 'Sembunyikan Form';
+                        servicePriceModal.style.display = 'block';
+                    }
+                }
+            }
+        });
+
+        document.getElementById('close-price-modal-btn').addEventListener('click', () => {
+            servicePriceModal.style.display = 'none';
+            addEditPriceCard.style.display = 'none';
+            showAddPriceFormBtn.textContent = 'Tambah Harga Baru';
+            customCostsContainer.innerHTML = '';
+        });
+        document.getElementById('close-price-details-modal-btn').addEventListener('click', () => priceDetailsModal.style.display = 'none');
+
+        editPriceDetailsBtn.addEventListener('click', async () => {
+            const priceId = priceDetailsModal.dataset.priceId;
+            if (priceId) {
+                const hasPermission = await authenticateAdmin('mengedit harga');
+                if(hasPermission){
+                    const docRef = doc(db, "servicePrices", priceId);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const price = docSnap.data();
+                        document.getElementById('price-id').value = priceId;
+                        document.getElementById('price-description').value = price.description;
+                        priceActionCostInput.value = price.actionCost || 0;
+                        priceBhpCostInput.value = price.bhpCost || 0;
+                        priceMedicineCostInput.value = price.medicineCost || 0;
+                        priceTravelCostInput.value = price.travelCost || 0;
+                        customCostsContainer.innerHTML = '';
+                        if (price.customCosts && price.customCosts.length > 0) {
+                            price.customCosts.forEach(customCost => {
+                                addCustomCostField(customCost.name, customCost.amount);
+                            });
+                        }
+                        calculateTotalAmount();
+                        addEditPriceTitle.textContent = 'Edit Harga';
+                        priceDetailsModal.style.display = 'none';
+                        addEditPriceCard.style.display = 'block';
+                        showAddPriceFormBtn.textContent = 'Sembunyikan Form';
+                        servicePriceModal.style.display = 'block';
+                    }
+                }
+            }
+        });
+
+        printInvoiceBtn.addEventListener('click', async () => {
+            selectInvoiceNurse.innerHTML = '<option value="">-- Pilih Perawat --</option>';
+            allNurses.forEach(nurseDoc => {
+                const nurse = nurseDoc.data();
+                const option = document.createElement('option');
+                option.value = nurse.name;
+                option.textContent = nurse.name;
+                selectInvoiceNurse.appendChild(option);
+            });
+            selectedInvoiceNurse = null;
+            selectInvoicePatient.innerHTML = '<option value="">-- Pilih Pasien --</option>';
+            allPatients.forEach(patientDoc => {
+                const patient = patientDoc.data();
+                const option = document.createElement('option');
+                option.value = patient.name;
+                option.textContent = patient.name;
+                selectInvoicePatient.appendChild(option);
+            });
+            selectedInvoicePatient = null;
+            invoiceSelectionError.style.display = 'none';
+            invoicePrintModal.style.display = 'block';
+        });
+
+        selectInvoiceNurse.addEventListener('change', (e) => {
+            selectedInvoiceNurse = e.target.value;
+            invoiceSelectionError.style.display = 'none';
+        });
+        selectInvoicePatient.addEventListener('change', (e) => {
+            selectedInvoicePatient = e.target.value;
+            invoiceSelectionError.style.display = 'none';
+        });
+
+        // PERBAIKAN: Event listener untuk "Cetak PDF Invoice" button
+        generatePdfBtn.addEventListener('click', async () => {
+            if (!selectedInvoiceNurse || !selectedInvoicePatient) {
+                invoiceSelectionError.style.display = 'block';
+                return;
+            }
+
+            invoicePrintModal.style.display = 'none';
+            document.body.style.cursor = 'wait';
+
+            let invoiceHtml = `
+                <div class="invoice-header">
+                    <img src="https://github.com/Aponk04/logilivecare/blob/main/LOGO%203.png?raw=true" alt="Logo Life Care" class="invoice-logo">
+                    <h1>INVOICE LAYANAN</h1>
+                </div>
+                <p style="text-align: center;">Tanggal: ${new Date().toLocaleDateString('id-ID', { dateStyle: 'long' })}</p>
+                <div>
+                    <p><strong>Perawat:</strong> ${selectedInvoiceNurse}</p>
+                    <p><strong>Pasien:</strong> ${selectedInvoicePatient}</p>
+                    <p><strong>Layanan:</strong> ${currentInvoicePriceData.description}</p>
+                </div>
+                <div class="invoice-details">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Deskripsi Biaya</th>
+                                <th>Jumlah (Rp)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Biaya Tindakan</td>
+                                <td>${new Intl.NumberFormat('id-ID').format(currentInvoicePriceData.actionCost || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td>Biaya BHP</td>
+                                <td>${new Intl.NumberFormat('id-ID').format(currentInvoicePriceData.bhpCost || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td>Harga Obat</td>
+                                <td>${new Intl.NumberFormat('id-ID').format(currentInvoicePriceData.medicineCost || 0)}</td>
+                            </tr>
+                            <tr>
+                                <td>Ongkos Perjalanan</td>
+                                <td>${new Intl.NumberFormat('id-ID').format(currentInvoicePriceData.travelCost || 0)}</td>
+                            </tr>
+                            ${currentInvoicePriceData.customCosts && currentInvoicePriceData.customCosts.map(cost => `
+                                <tr>
+                                    <td>${cost.name}</td>
+                                    <td>${new Intl.NumberFormat('id-ID').format(cost.amount || 0)}</td>
+                                </tr>
+                            `).join('')}
+                            <tr>
+                                <td style="text-align: right; font-weight: bold;">TOTAL</td>
+                                <td style="font-weight: bold;">Rp ${new Intl.NumberFormat('id-ID').format(currentInvoicePriceData.amount)}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 40px; text-align: center; font-size: 12px; color: #666;">Terima kasih atas kepercayaan Anda pada layanan Life Care.</p>
+            `;
+
+            invoicePdfContent.innerHTML = invoiceHtml;
+            const contentToRender = document.getElementById('invoice-pdf-content-wrapper');
+
+            try {
+                const canvas = await html2canvas(contentToRender, {
+                    scale: 2,
+                    useCORS: true,
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+                
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`Invoice_${selectedInvoicePatient.replace(/\s/g, '_')}.pdf`);
+
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+                alert("Gagal membuat PDF invoice. Periksa konsol untuk detail.");
+            } finally {
+                document.body.style.cursor = 'default';
+                invoicePdfContent.innerHTML = '';
+            }
+        });
+
+        closeInvoicePrintModalBtn.addEventListener('click', () => {
+            invoicePrintModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target == servicePriceModal || e.target == editPatientModal || e.target == addDrugModal || e.target == editDrugModal || e.target == editNurseModal || e.target == adminPasswordModal || e.target == priceDetailsModal || e.target == invoicePrintModal) {
+                servicePriceModal.style.display = 'none';
+                editPatientModal.style.display = 'none';
+                addDrugModal.style.display = 'none';
+                editDrugModal.style.display = 'none';
+                editNurseModal.style.display = 'none';
+                adminPasswordModal.style.display = 'none';
+                priceDetailsModal.style.display = 'none';
+                invoicePrintModal.style.display = 'none';
+                addEditPriceCard.style.display = 'none';
+                showAddPriceFormBtn.textContent = 'Tambah Harga Baru';
+                customCostsContainer.innerHTML = '';
+            }
+        });
+
     </script>
 </body>
 </html>
